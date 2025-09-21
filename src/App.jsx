@@ -1,10 +1,15 @@
-import { useState } from 'react'
+import './index.css'
+import { Button } from './components/ui/Button'
+import { Input } from './components/ui/Input'
+
 function App() {
-  const [count, setCount] = useState(0)
+
 
   return (
     <>
-      <h1>Hello capstone</h1>
+      <h1 className='text-5xl text-center'>Hello capstone</h1>
+      <Button>Click me</Button>
+      <Input />
     </>
   )
 }
