@@ -1,11 +1,12 @@
 {
-  "files": [],
-  "references": [
-  ],
+  // "files" array removed as it was empty and unnecessary
+  "references": [],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     }
   }
 }
