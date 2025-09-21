@@ -22,7 +22,7 @@ export default function Navbar() {
   return (
     // <header className="border-b px-4 md:px-6 fixed  ">
     <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-white/70 shadow-md">
-      <div className="flex h-16 justify-between gap-4">
+      <div className="flex h-16 justify-between gap-4 mx-10">
         {/* Left side */}
         <div className="flex gap-2">
 

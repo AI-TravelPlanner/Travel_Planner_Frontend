@@ -1,5 +1,6 @@
 import React from 'react'
 import Navbar from './Navbar'
+import { Footer7 } from './Footer';
 
 const Layout = ({ children }) => {
     return (
@@ -14,6 +15,7 @@ const Layout = ({ children }) => {
             <main className="flex-grow px-4 md:px-6 pt-4">
                 {children}
             </main>
+            <Footer7 />
         </div>
     );
 };
