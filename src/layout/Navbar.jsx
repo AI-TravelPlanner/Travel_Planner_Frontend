@@ -1,5 +1,6 @@
 import Logo from "@/components/logo"
 import { Button } from "@/components/ui/button"
+import { Link } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -30,28 +31,34 @@ export default function Navbar() {
             {/* Mobile menu trigger */}
             <Popover>
               <PopoverTrigger asChild>
-                <Button className="group size-8" variant="ghost" size="icon">
-                  <svg
-                    className="pointer-events-none"
-                    width={16}
-                    height={16}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M4 12L20 12"
-                      className="origin-center -translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-x-0 group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[315deg]" />
-                    <path
-                      d="M4 12H20"
-                      className="origin-center transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.8)] group-aria-expanded:rotate-45" />
-                    <path
-                      d="M4 12H20"
-                      className="origin-center translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[135deg]" />
-                  </svg>
+                <Button asChild className="group size-8" variant="ghost" size="icon">
+                  <Link to="/">
+                    <svg
+                      className="pointer-events-none"
+                      width={16}
+                      height={16}
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4 12L20 12"
+                        className="origin-center -translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-x-0 group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[315deg]"
+                      />
+                      <path
+                        d="M4 12H20"
+                        className="origin-center transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.8)] group-aria-expanded:rotate-45"
+                      />
+                      <path
+                        d="M4 12H20"
+                        className="origin-center translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[135deg]"
+                      />
+                    </svg>
+                  </Link>
                 </Button>
               </PopoverTrigger>
               <PopoverContent align="start" className="w-36 p-1 md:hidden">
@@ -74,9 +81,9 @@ export default function Navbar() {
 
           {/* Main nav */}
           <div className="flex items-center gap-6">
-            <a href="#" className="text-primary hover:text-primary/90">
+            <Link to="/">
               <Logo />
-            </a>
+            </Link>
             {/* Navigation menu */}
             <NavigationMenu className="h-full *:h-full max-md:hidden">
               <NavigationMenuList className="h-full gap-2">
@@ -98,9 +105,9 @@ export default function Navbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-2">
-          <Button asChild variant="ghost" size="sm" className="text-sm">
-            <a href="#">Sign In</a>
-          </Button>
+          <Link to="/auth">
+            <Button variant="ghost" size="sm" className="text-sm">Sign In</Button>
+          </Link>   {/* Navigate to /auth */}
           <Button asChild size="sm" className="text-sm">
             <a href="#">Plan Trip</a>
           </Button>
