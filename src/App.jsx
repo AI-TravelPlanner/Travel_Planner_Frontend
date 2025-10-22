@@ -12,6 +12,7 @@ import { auth } from "@/firebase/firebaseConfig";
 import { setUser, logout } from "@/authSlice/authSlice";
 import "react-toastify/dist/ReactToastify.css";
 import DemoPlanTrip from "@/plan-trip/planTrip";
+import ImageCarousel from "./carousel/Carousel";
 
 function App() {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ImageCarousel />
       <Routes>
         {/* Authentication route */}
         <Route path="/auth" element={<AuthPage />} />
