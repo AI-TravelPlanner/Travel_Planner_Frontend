@@ -30,7 +30,6 @@ function App() {
 
   return (
     <BrowserRouter>
-      <ImageCarousel />
       <Routes>
         {/* Authentication route */}
         <Route path="/auth" element={<AuthPage />} />
@@ -43,6 +42,7 @@ function App() {
           path="*"
           element={
             <Layout>
+              <ImageCarousel />
               <AppRoutes />
             </Layout>
           }
