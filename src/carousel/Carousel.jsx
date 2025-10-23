@@ -133,7 +133,7 @@ export default function ImageCarousel({ className = "h-screen w-full" }) {
       </div>
 
       {/* ✅ Play / Pause Button */}
-      <div className="absolute top-6 right-6">
+      <div className="absolute bottom-6 right-6">
         <button
           onClick={() => setIsPlaying((prev) => !prev)}
           className="p-3 rounded-full bg-white/30 hover:bg-white/50 transition shadow-md cursor-pointer"
