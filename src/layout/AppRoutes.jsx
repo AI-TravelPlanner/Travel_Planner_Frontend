@@ -1,4 +1,5 @@
-import React from 'react'
+// src/layout/AppRoutes.jsx
+import React from "react";
 import { Routes, Route } from "react-router-dom";
 import HomePage from './HomePage';
 import PageNotFound from './PageNotFound';
@@ -18,5 +19,4 @@ const AppRoutes = () => {
     );
 }
 
-
-export default AppRoutes
+export default AppRoutes;
