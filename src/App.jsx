@@ -1,8 +1,9 @@
 import './index.css'
 import React from 'react'
-import Layout from './layout/Layout'
-import AppRoutes from './layout/AppRoutes'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Dashboard from './dashboard/Dashboard'
+import AuthPage from '@/SignIn/SignInPage';
+import PageNotFound from './layout/PageNotFound';
 
 
 function App() {
@@ -11,9 +12,11 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Layout>
-          <AppRoutes />
-        </Layout>
+        <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="*" element={<PageNotFound />} />
+        </Routes>
       </BrowserRouter>
     </>
   )
