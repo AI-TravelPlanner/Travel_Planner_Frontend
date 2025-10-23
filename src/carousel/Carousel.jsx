@@ -109,7 +109,7 @@ export default function ImageCarousel({ className = "h-screen w-full" }) {
               Discover The True North Strong & Free!
               <br />
               <span className="text-white/90">
-                From coast to coast to coast — experience Canada’s breathtaking
+                From coast to coast — experience Canada’s breathtaking
                 landscapes, vibrant cities, and unforgettable adventures.
               </span>
             </motion.p>
