@@ -2,7 +2,8 @@ import './index.css'
 import React from 'react'
 import Layout from './layout/Layout'
 import AppRoutes from './layout/AppRoutes'
-import { BrowserRouter } from 'react-router'
+import { BrowserRouter } from 'react-router-dom'
+
 
 function App() {
 
