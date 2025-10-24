@@ -13,26 +13,26 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      {/* Public route with Layout */}
+      {/* Public routes with Layout */}
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/plan-trip" element={<DemoPlanTrip />} />
         <Route path="/user-profile" element={<HomePage />} />
       </Route>
 
-      {/* Auth route without Layout */}
+      {/* Auth route — redirect logged-in users to /user-profile */}
       <Route
         path="/auth"
-        element={user ? <Navigate to="/dashboard" /> : <AuthPage />}
+        element={user ? <Navigate to="/user-profile" replace /> : <AuthPage />}
       />
 
-      {/* Protected Dashboard route */}
+      {/* Protected route */}
       <Route
         path="/dashboard"
-        element={user ? <Dashboard /> : <Navigate to="/auth" />}
+        element={user ? <Dashboard /> : <Navigate to="/auth" replace />}
       />
 
-      {/* Catch-all */}
+      {/* 404 fallback */}
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

@@ -1,5 +1,5 @@
 import "@/index.css";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const dispatch = useDispatch();
+  const [isAuthReady, setIsAuthReady] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -20,9 +21,13 @@ function App() {
       } else {
         dispatch(logout());
       }
+      setIsAuthReady(true);
     });
+
     return () => unsubscribe();
   }, [dispatch]);
+
+  if (!isAuthReady) return null;
 
   return (
     <BrowserRouter>
