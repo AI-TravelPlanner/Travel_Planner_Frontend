@@ -164,14 +164,27 @@ export default function Navbar() {
               </Button>
             </Link>
           ) : (
-            <Button
-              onClick={handleLogout}
-              variant="ghost"
-              size="sm"
-              className="text-sm cursor-pointer bg-gray-200 hover:bg-gray-300 px-4 py-4"
-            >
-              Logout
-            </Button>
+            <>
+              {/* Dashboard Button (only visible when logged in) */}
+              <Link to="/dashboard">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-sm cursor-pointer bg-gray-200 hover:bg-gray-300 px-4 py-4"
+                >
+                  Dashboard
+                </Button>
+              </Link>
+
+              <Button
+                onClick={handleLogout}
+                variant="ghost"
+                size="sm"
+                className="text-sm cursor-pointer bg-gray-200 hover:bg-gray-300 px-4 py-4"
+              >
+                Logout
+              </Button>
+            </>
           )}
 
           {/* Plan Trip Button */}
