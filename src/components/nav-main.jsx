@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { ChevronRight } from "lucide-react";
 
@@ -20,9 +19,9 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
-import { Slider } from "@/components/ui/slider";
+import BudgetSlider from "@/components/budget-slider";
+import DateRangePicker from "@/components/date-range-picker";
 import { Input } from "@/components/ui/input";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Select,
   SelectContent,
@@ -67,7 +66,6 @@ export function NavMain({ items }) {
     (state) => state.filter
   );
   const [minBudget, maxBudget] = budget;
-  const [activeInput, setActiveInput] = useState(null);
 
   return (
     <SidebarGroup>
@@ -102,24 +100,17 @@ export function NavMain({ items }) {
                   {item.title === "Budget" && (
                     <SidebarMenuSubItem>
                       <div className="flex flex-col gap-3">
-                        <label className="text-sm font-medium">Budget</label>
+                        <label className="text-sm font-medium">
+                          Create Budget
+                        </label>
 
-                        {/* Single Slider */}
-                        <Slider
-                          value={[
-                            activeInput === "max" ? maxBudget : minBudget,
-                          ]}
-                          onValueChange={(val) => {
-                            const newVal = val[0];
-                            if (activeInput === "min") {
-                              if (newVal <= maxBudget)
-                                dispatch(setBudget([newVal, maxBudget]));
-                            } else if (activeInput === "max") {
-                              if (newVal >= minBudget)
-                                dispatch(setBudget([minBudget, newVal]));
-                            } else {
-                              dispatch(setBudget([newVal, maxBudget]));
-                            }
+                        {/* Range Slider */}
+                        <BudgetSlider
+                          value={[minBudget, maxBudget]}
+                          onValueChange={([newMin, newMax]) => {
+                            // Ensure min is not greater than max
+                            if (newMin <= newMax)
+                              dispatch(setBudget([newMin, newMax]));
                           }}
                           max={50000}
                           step={1000}
@@ -134,7 +125,6 @@ export function NavMain({ items }) {
                             <Input
                               type="number"
                               value={minBudget}
-                              onFocus={() => setActiveInput("min")}
                               onChange={(e) => {
                                 let val = Number(e.target.value);
                                 if (val >= 0 && val <= maxBudget)
@@ -157,7 +147,6 @@ export function NavMain({ items }) {
                             <Input
                               type="number"
                               value={maxBudget}
-                              onFocus={() => setActiveInput("max")}
                               onChange={(e) => {
                                 let val = Number(e.target.value);
                                 if (val >= minBudget && val <= 50000)
@@ -170,11 +159,7 @@ export function NavMain({ items }) {
                         </div>
 
                         <p className="text-xs text-muted-foreground">
-                          {activeInput === "min"
-                            ? "Adjusting minimum budget"
-                            : activeInput === "max"
-                            ? "Adjusting maximum budget"
-                            : "Select a field to adjust"}
+                          Adjust your budget range
                         </p>
                       </div>
                     </SidebarMenuSubItem>
@@ -183,15 +168,18 @@ export function NavMain({ items }) {
                   {/* Calendar Section */}
                   {item.title === "Calendar" && (
                     <SidebarMenuSubItem>
-                      <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-3 w-full">
                         <label className="text-sm font-medium">
                           Select Date
                         </label>
-                        <Calendar
+                        <DateRangePicker
                           mode="single"
-                          selected={date}
-                          onSelect={(val) => dispatch(setDate(val))}
-                          className="rounded-md border"
+                          selected={date || null}
+                          onSelect={(val) => {
+                            if (val) dispatch(setDate(val));
+                          }}
+                          className="w-full rounded-md border px-2 py-1"
+                          placeholder="Select a date"
                         />
                       </div>
                     </SidebarMenuSubItem>
