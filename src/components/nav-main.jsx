@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { ChevronRight } from "lucide-react";
 
 import {
@@ -32,6 +33,14 @@ import {
 
 import HeadCount from "./head-count";
 
+import {
+  setBudget,
+  setHeadCount,
+  setProvince,
+  setSeason,
+  setDate,
+} from "@/redux-slices/filterSlice";
+
 // List of Canadian provinces
 const provinces = [
   "Alberta",
@@ -53,11 +62,11 @@ const provinces = [
 const seasons = ["Spring", "Summer", "Autumn", "Winter"];
 
 export function NavMain({ items }) {
-  const [date, setDate] = useState(new Date());
-  const [province, setProvince] = useState("Ontario");
-  const [season, setSeason] = useState("Summer");
-  const [minBudget, setMinBudget] = useState(0);
-  const [maxBudget, setMaxBudget] = useState(50000);
+  const dispatch = useDispatch();
+  const { budget, headCount, province, season, date } = useSelector(
+    (state) => state.filter
+  );
+  const [minBudget, maxBudget] = budget;
   const [activeInput, setActiveInput] = useState(null);
 
   return (
@@ -81,7 +90,10 @@ export function NavMain({ items }) {
                   {item.title === "Members" && (
                     <SidebarMenuSubItem>
                       <SidebarMenuSubButton asChild>
-                        <HeadCount />
+                        <HeadCount
+                          value={headCount}
+                          onChange={(val) => dispatch(setHeadCount(val))}
+                        />
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   )}
@@ -100,11 +112,13 @@ export function NavMain({ items }) {
                           onValueChange={(val) => {
                             const newVal = val[0];
                             if (activeInput === "min") {
-                              if (newVal <= maxBudget) setMinBudget(newVal);
+                              if (newVal <= maxBudget)
+                                dispatch(setBudget([newVal, maxBudget]));
                             } else if (activeInput === "max") {
-                              if (newVal >= minBudget) setMaxBudget(newVal);
+                              if (newVal >= minBudget)
+                                dispatch(setBudget([minBudget, newVal]));
                             } else {
-                              setMinBudget(newVal);
+                              dispatch(setBudget([newVal, maxBudget]));
                             }
                           }}
                           max={50000}
@@ -124,7 +138,7 @@ export function NavMain({ items }) {
                               onChange={(e) => {
                                 let val = Number(e.target.value);
                                 if (val >= 0 && val <= maxBudget)
-                                  setMinBudget(val);
+                                  dispatch(setBudget([val, maxBudget]));
                               }}
                               min={0}
                               max={maxBudget}
@@ -147,7 +161,7 @@ export function NavMain({ items }) {
                               onChange={(e) => {
                                 let val = Number(e.target.value);
                                 if (val >= minBudget && val <= 50000)
-                                  setMaxBudget(val);
+                                  dispatch(setBudget([minBudget, val]));
                               }}
                               min={minBudget}
                               max={50000}
@@ -176,7 +190,7 @@ export function NavMain({ items }) {
                         <Calendar
                           mode="single"
                           selected={date}
-                          onSelect={setDate}
+                          onSelect={(val) => dispatch(setDate(val))}
                           className="rounded-md border"
                         />
                       </div>
@@ -190,7 +204,10 @@ export function NavMain({ items }) {
                         <label className="text-sm font-medium">
                           Select Province
                         </label>
-                        <Select value={province} onValueChange={setProvince}>
+                        <Select
+                          value={province}
+                          onValueChange={(val) => dispatch(setProvince(val))}
+                        >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select province" />
                           </SelectTrigger>
@@ -213,7 +230,10 @@ export function NavMain({ items }) {
                         <label className="text-sm font-medium">
                           Select Season
                         </label>
-                        <Select value={season} onValueChange={setSeason}>
+                        <Select
+                          value={season}
+                          onValueChange={(val) => dispatch(setSeason(val))}
+                        >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select season" />
                           </SelectTrigger>
