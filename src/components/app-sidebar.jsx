@@ -3,19 +3,8 @@
 import * as React from "react";
 import {
   AudioWaveform,
-  BookOpen,
-  Bot,
-  Calendar,
   Command,
-  Frame,
   GalleryVerticalEnd,
-  LocateIcon,
-  Map,
-  PersonStanding,
-  PersonStandingIcon,
-  PieChart,
-  Settings2,
-  SquareTerminal,
   Users,
   Wallet,
   CalendarDays,
@@ -24,7 +13,6 @@ import {
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
@@ -34,84 +22,52 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-// import { monthsInYear } from "date-fns/constants";
-// import { FaMoneyCheck } from "react-icons/fa";
 
-// This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  navMain: [
-    {
-      title: "Members",
-      url: "#",
-      icon: Users,
-      isActive: true,
-      items: [],
-    },
-    {
-      title: "Calendar",
-      url: "#",
-      icon: CalendarDays,
-      isActive: true,
-      items: [],
-    },
-    {
-      title: "Seasons",
-      url: "#",
-      icon: CloudSun,
-      isActive: true,
-      items: [],
-    },
-    {
-      title: "Budget",
-      url: "#",
-      icon: Wallet,
-      isActive: true,
-      items: [],
-    },
-    {
-      title: "Province",
-      url: "#",
-      icon: MapPin,
-      isActive: true,
-      items: [],
-    },
-  ],
-};
+import { useSelector } from "react-redux";
 
 export function AppSidebar({ ...props }) {
+  const user = useSelector((state) => state.auth.user); // Firebase user
+
+  const navMainItems = [
+    { title: "Members", icon: Users },
+    { title: "Calendar", icon: CalendarDays },
+    { title: "Seasons", icon: CloudSun },
+    { title: "Budget", icon: Wallet },
+    { title: "Province", icon: MapPin },
+  ];
+
+  const fullName =
+    user?.displayName ||
+    (user?.firstName && user?.lastName
+      ? `${user.firstName} ${user.lastName}`
+      : "NA");
+
+  const userData = {
+    name: fullName,
+    email: user?.email || "NA",
+    avatar: user?.photoURL || null,
+  };
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher
+          teams={[
+            { name: "Acme Inc", logo: GalleryVerticalEnd, plan: "Enterprise" },
+            { name: "Acme Corp.", logo: AudioWaveform, plan: "Startup" },
+            { name: "Evil Corp.", logo: Command, plan: "Free" },
+          ]}
+        />
       </SidebarHeader>
+
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMainItems} />
       </SidebarContent>
+
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   );

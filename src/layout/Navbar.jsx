@@ -141,13 +141,18 @@ export default function Navbar() {
               {user.photoURL ? (
                 <AvatarImage
                   src={user.photoURL}
-                  alt={user.displayName || user.name || user.email || "User"}
+                  alt={user.displayName || user.email || "User"}
                 />
               ) : (
                 <AvatarFallback>
-                  {(user.displayName || user.name || user.email || "NA")
-                    .slice(0, 2)
-                    .toUpperCase()}
+                  {user.displayName
+                    ? user.displayName
+                        .split(" ")
+                        .slice(0, 2)
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()
+                    : "NA"}
                 </AvatarFallback>
               )}
             </Avatar>
