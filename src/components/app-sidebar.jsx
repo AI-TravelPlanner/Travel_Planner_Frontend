@@ -1,180 +1,136 @@
-import * as React from "react"
-import {
-  ArrowUpCircleIcon,
-  BarChartIcon,
-  CameraIcon,
-  ClipboardListIcon,
-  DatabaseIcon,
-  FileCodeIcon,
-  FileIcon,
-  FileTextIcon,
-  FolderIcon,
-  HelpCircleIcon,
-  LayoutDashboardIcon,
-  ListIcon,
-  SearchIcon,
-  SettingsIcon,
-  UsersIcon,
-} from "lucide-react"
+"use client";
 
-import { NavDocuments } from "@/components/nav-documents"
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import * as React from "react";
+import {
+  AudioWaveform,
+  BookOpen,
+  Bot,
+  Calendar,
+  Command,
+  Frame,
+  GalleryVerticalEnd,
+  LocateIcon,
+  Map,
+  PersonStanding,
+  PersonStandingIcon,
+  PieChart,
+  Settings2,
+  SquareTerminal,
+  Users,
+  Wallet,
+  CalendarDays,
+  MapPin,
+  CloudSun,
+} from "lucide-react";
+
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavUser } from "@/components/nav-user";
+import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
+  SidebarRail,
+} from "@/components/ui/sidebar";
+// import { monthsInYear } from "date-fns/constants";
+// import { FaMoneyCheck } from "react-icons/fa";
 
+// This is sample data.
 const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
+  teams: [
+    {
+      name: "Acme Inc",
+      logo: GalleryVerticalEnd,
+      plan: "Enterprise",
+    },
+    {
+      name: "Acme Corp.",
+      logo: AudioWaveform,
+      plan: "Startup",
+    },
+    {
+      name: "Evil Corp.",
+      logo: Command,
+      plan: "Free",
+    },
+  ],
   navMain: [
     {
-      title: "Dashboard",
+      title: "Members",
       url: "#",
-      icon: LayoutDashboardIcon,
+      icon: Users,
+      isActive: true,
+      items: [],
     },
     {
-      title: "Lifecycle",
+      title: "Calendar",
       url: "#",
-      icon: ListIcon,
+      icon: CalendarDays,
+      isActive: true,
+      items: [],
     },
     {
-      title: "Analytics",
+      title: "Seasons",
       url: "#",
-      icon: BarChartIcon,
+      icon: CloudSun,
+      isActive: true,
+      items: [],
     },
     {
-      title: "Projects",
+      title: "Budget",
       url: "#",
-      icon: FolderIcon,
+      icon: Wallet,
+      isActive: true,
+      items: [],
     },
     {
-      title: "Team",
+      title: "Province",
       url: "#",
-      icon: UsersIcon,
+      icon: MapPin,
+      isActive: true,
+      items: [],
     },
   ],
-  // navClouds: [
+  // projects: [
   //   {
-  //     title: "Capture",
-  //     icon: CameraIcon,
-  //     isActive: true,
+  //     name: "Design Engineering",
   //     url: "#",
-  //     items: [
-  //       {
-  //         title: "Active Proposals",
-  //         url: "#",
-  //       },
-  //       {
-  //         title: "Archived",
-  //         url: "#",
-  //       },
-  //     ],
+  //     icon: Frame,
   //   },
   //   {
-  //     title: "Proposal",
-  //     icon: FileTextIcon,
+  //     name: "Sales & Marketing",
   //     url: "#",
-  //     items: [
-  //       {
-  //         title: "Active Proposals",
-  //         url: "#",
-  //       },
-  //       {
-  //         title: "Archived",
-  //         url: "#",
-  //       },
-  //     ],
+  //     icon: PieChart,
   //   },
   //   {
-  //     title: "Prompts",
-  //     icon: FileCodeIcon,
+  //     name: "Travel",
   //     url: "#",
-  //     items: [
-  //       {
-  //         title: "Active Proposals",
-  //         url: "#",
-  //       },
-  //       {
-  //         title: "Archived",
-  //         url: "#",
-  //       },
-  //     ],
+  //     icon: Map,
   //   },
   // ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: SettingsIcon,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: HelpCircleIcon,
-    },
-  ],
-  // documents: [
-  //   {
-  //     name: "Data Library",
-  //     url: "#",
-  //     icon: DatabaseIcon,
-  //   },
-  //   {
-  //     name: "Reports",
-  //     url: "#",
-  //     icon: ClipboardListIcon,
-  //   },
-  //   {
-  //     name: "Word Assistant",
-  //     url: "#",
-  //     icon: FileIcon,
-  //   },
-  // ],
-}
+};
 
-export function AppSidebar({
-  ...props
-}) {
+export function AppSidebar({ ...props }) {
   return (
-    <Sidebar variant="floating" collapsible="icon" {...props}>
-
-      {/* //Logo area and redirection home page */}
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
-              <a href="#">
-                <ArrowUpCircleIcon className="h-5 w-5" />
-                <span className="text-base font-semibold">Nomadic</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-
-        </SidebarMenu>
+        <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
-
-
-
       <SidebarContent>
         <NavMain items={data.navMain} />
-        {/* <NavDocuments items={data.documents} /> */}
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }

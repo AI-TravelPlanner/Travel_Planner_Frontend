@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 // STEP 1: Correct imports
 import { useSelector, useDispatch } from "react-redux";
-import { setHeadCount } from "@/redux-slices/filterSlice"; 
+import { setHeadCount } from "@/redux-slices/filterSlice";
 
 export default function HeadCount() {
   // STEP 2: Initialize dispatch
@@ -21,22 +21,24 @@ export default function HeadCount() {
   const userHeadCount = useSelector((state) => state.filter.headCount);
 
   // These functions are now correct
-  const decreaseHeadCount = () => dispatch(setHeadCount(Math.max(0, userHeadCount - 1)));
-  const increaseHeadCount = () => dispatch(setHeadCount(Math.min(20, userHeadCount + 1)));
+  const decreaseHeadCount = () =>
+    dispatch(setHeadCount(Math.max(0, userHeadCount - 1)));
+  const increaseHeadCount = () =>
+    dispatch(setHeadCount(Math.min(20, userHeadCount + 1)));
 
   // This logic was already perfect
   const Icon =
     userHeadCount === 0
       ? UserXIcon
       : userHeadCount === 1
-        ? UserIcon
-        : userHeadCount === 2
-          ? UsersIcon
-          : UserPlusIcon;
+      ? UserIcon
+      : userHeadCount === 2
+      ? UsersIcon
+      : UserPlusIcon;
 
   return (
     <div
-      className="inline-flex items-center"
+      className="inline-flex items-center justify-center w-full"
       role="group"
       // STEP 3: Fix accessibility label
       aria-labelledby="headcount-control"
