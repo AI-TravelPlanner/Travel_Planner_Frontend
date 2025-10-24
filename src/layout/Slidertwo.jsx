@@ -6,32 +6,31 @@ const BRAND_COLOR = "#4A1919";
 const sliderData = [
   {
     type: "flight",
-    title: "Ready to Take Flight?",
-    description: "Canada's destinations are closer than you think. Find your flight and begin the adventure.",
+    title: "Winter Express",
+    description: "Stay in handpicked resorts—cozy cabins, glass igloos, and luxurious lodges—right beneath the dancing auroras. From guided excursions to quiet evenings by the fire, Nomadic brings you Canada's most magical winter escapes.",
     buttonText: "Explore",
-    imageSrc: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&auto=format&fit=crop&q=60",
-    alt: "Plane in Sky",
+    imageSrc: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&auto=format&fit=crop&q=60",
+    alt: "Snowy winter cabin in Canada",
   },
-{
-  type: "rocky-mountains",
-  title: "Your Canadian Adventure Starts Here",
-  description: "Your perfect Canadian adventure is waiting. Whether you have a weekend or a month, our personalized planning tools will help you craft an unforgettable journey through the true north strong and free. Start planning your perfect trip today - because the best stories begin with a single step into the unknown.",
-  buttonText: "Explore",
-  imageSrc: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200&auto=format&fit=crop&q=80", // Jasper National Park
-  alt: "Jasper National Park, Alberta",
-},
-{
-  type: "overlapping-images",
-  title: "Discover Canada's Hidden Depths",
-  description: "Canada offers what many destinations have lost to overtourism - space to explore at your own pace. Picture crystal-clear lakes to yourself, genuine local culture, and meaningful Indigenous connections. From Newfoundland's rugged coastlines to Montreal's urban sophistication, Canada rewards travelers seeking authentic experiences over photo opportunities.",
-  buttonText: "Discover",
-  imageSrc: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200&auto=format&fit=crop&q=80", // Moraine Lake
-  alt: "Moraine Lake in Banff National Park",
-},
-
+  {
+    type: "urban",
+    title: "Urban Getaway",
+    description: "Stay in handpicked urban retreats—boutique hotels, skyline suites, and chic lofts—right in the heart of the city's vibrant energy. From guided neighborhood tours to quiet evenings at rooftop bars, Nomadic brings you Canada's most exciting urban escapes.",
+    buttonText: "Explore",
+    imageSrc: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&auto=format&fit=crop&q=60",
+    alt: "Modern city skyline at night",
+  },
+  {
+    type: "nature",
+    title: "Discover Canada's Hidden Depths",
+    description: "Canada offers what many destinations have lost to overtourism - space to explore at your own pace. Picture crystal-clear lakes to yourself, genuine local culture, and meaningful Indigenous connections. From Newfoundland's rugged coastlines to Montreal's urban sophistication, Canada rewards travelers seeking authentic experiences over photo opportunities.",
+    buttonText: "Discover",
+    imageSrc: "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=800&auto=format&fit=crop&q=60",
+    alt: "Moraine Lake in Banff National Park",
+  },
 ];
 
-const Slider = () => {
+const Slidertwo = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -82,9 +81,10 @@ const Slider = () => {
           </div>
         </div>
 
-        {/* Image Content */}
+        {/* Image Content - SIMPLIFIED LIKE HOTEL CAROUSEL */}
         <div className="lg:w-1/2 min-h-[400px] lg:min-h-[600px] p-6 lg:p-12 flex items-center justify-center order-1 lg:order-2">
           <div className="w-full h-full relative">
+            {/* Simple image container - no fancy absolute positioning */}
             <div className="w-full h-full rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
               <img
                 src={currentSlide.imageSrc}
@@ -150,4 +150,4 @@ const Slider = () => {
   );
 };
 
-export default Slider;
+export default Slidertwo;

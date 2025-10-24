@@ -1,14 +1,21 @@
 import React from 'react'
+import Slider from './Slider'
+import { Temp } from './Temp'
+import DestinationSlider from './DestinationSlider'
+import Slidertwo from './Slidertwo' 
+import CtaSection from './CtaSection'; 
 
 const HomePage = () => {
     return (
         <div className="space-y-6">
-            <div>HomePage</div>
-            {[...Array(30)].map((_, i) => (
-                <p key={i}>This is line {i + 1}</p>
-            ))}
+            {/* Slider Component */}
+            <Slider />
+            <DestinationSlider/>
+            <Slidertwo/> 
+            <CtaSection/>
+        
+        
         </div>
-
     )
 }
 
