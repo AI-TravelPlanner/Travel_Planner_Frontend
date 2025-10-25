@@ -1,22 +1,41 @@
-// src/layout/AppRoutes.jsx
 import React from "react";
-import { Routes, Route } from "react-router-dom";
-import HomePage from './HomePage';
-import PageNotFound from './PageNotFound';
-import AuthPage from '@/SignIn/SignInPage';
-import Dashboard from '@/dashboard/Dashboard';
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import HomePage from "./HomePage";
+import PageNotFound from "./PageNotFound";
+import AuthPage from "@/SignIn/SignInPage";
+import Dashboard from "@/dashboard/Dashboard";
+import DemoPlanTrip from "@/plan-trip/planTrip";
+import Layout from "./Layout";
 
 const AppRoutes = () => {
-    return (
-        <Routes>
-            {/* <Route path="/" element={<HomePage />} /> */}
-            <Route path="/" element={<Dashboard />} />
+  const user = useSelector((state) => state.auth.user);
 
-            <Route path="/auth" element={<AuthPage />} />
-            {/* Catch-All Route for 404 Page */}
-            <Route path="*" element={<PageNotFound />} />
-        </Routes>
-    );
-}
+  return (
+    <Routes>
+      {/* Public routes with Layout */}
+      <Route element={<Layout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/plan-trip" element={<DemoPlanTrip />} />
+        <Route path="/user-profile" element={<HomePage />} />
+      </Route>
+
+      {/* Auth route — redirect logged-in users to /user-profile */}
+      <Route
+        path="/auth"
+        element={user ? <Navigate to="/user-profile" replace /> : <AuthPage />}
+      />
+
+      {/* Protected route */}
+      <Route
+        path="/dashboard"
+        element={user ? <Dashboard /> : <Navigate to="/auth" replace />}
+      />
+
+      {/* 404 fallback */}
+      <Route path="*" element={<PageNotFound />} />
+    </Routes>
+  );
+};
 
 export default AppRoutes;

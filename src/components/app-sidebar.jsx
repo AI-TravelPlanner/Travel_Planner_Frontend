@@ -1,180 +1,74 @@
-import * as React from "react"
-import {
-  ArrowUpCircleIcon,
-  BarChartIcon,
-  CameraIcon,
-  ClipboardListIcon,
-  DatabaseIcon,
-  FileCodeIcon,
-  FileIcon,
-  FileTextIcon,
-  FolderIcon,
-  HelpCircleIcon,
-  LayoutDashboardIcon,
-  ListIcon,
-  SearchIcon,
-  SettingsIcon,
-  UsersIcon,
-} from "lucide-react"
+"use client";
 
-import { NavDocuments } from "@/components/nav-documents"
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import * as React from "react";
+import {
+  AudioWaveform,
+  Command,
+  GalleryVerticalEnd,
+  Users,
+  Wallet,
+  CalendarDays,
+  MapPin,
+  CloudSun,
+} from "lucide-react";
+
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
+import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
+  SidebarRail,
+} from "@/components/ui/sidebar";
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: LayoutDashboardIcon,
-    },
-    {
-      title: "Lifecycle",
-      url: "#",
-      icon: ListIcon,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: BarChartIcon,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: FolderIcon,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: UsersIcon,
-    },
-  ],
-  // navClouds: [
-  //   {
-  //     title: "Capture",
-  //     icon: CameraIcon,
-  //     isActive: true,
-  //     url: "#",
-  //     items: [
-  //       {
-  //         title: "Active Proposals",
-  //         url: "#",
-  //       },
-  //       {
-  //         title: "Archived",
-  //         url: "#",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     title: "Proposal",
-  //     icon: FileTextIcon,
-  //     url: "#",
-  //     items: [
-  //       {
-  //         title: "Active Proposals",
-  //         url: "#",
-  //       },
-  //       {
-  //         title: "Archived",
-  //         url: "#",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     title: "Prompts",
-  //     icon: FileCodeIcon,
-  //     url: "#",
-  //     items: [
-  //       {
-  //         title: "Active Proposals",
-  //         url: "#",
-  //       },
-  //       {
-  //         title: "Archived",
-  //         url: "#",
-  //       },
-  //     ],
-  //   },
-  // ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: SettingsIcon,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: HelpCircleIcon,
-    },
-  ],
-  // documents: [
-  //   {
-  //     name: "Data Library",
-  //     url: "#",
-  //     icon: DatabaseIcon,
-  //   },
-  //   {
-  //     name: "Reports",
-  //     url: "#",
-  //     icon: ClipboardListIcon,
-  //   },
-  //   {
-  //     name: "Word Assistant",
-  //     url: "#",
-  //     icon: FileIcon,
-  //   },
-  // ],
-}
+import { useSelector } from "react-redux";
 
-export function AppSidebar({
-  ...props
-}) {
+export function AppSidebar({ ...props }) {
+  const user = useSelector((state) => state.auth.user); // Firebase user
+
+  const navMainItems = [
+    { title: "Members", icon: Users },
+    { title: "Calendar", icon: CalendarDays },
+    { title: "Seasons", icon: CloudSun },
+    { title: "Budget", icon: Wallet },
+    { title: "Province", icon: MapPin },
+  ];
+
+  const fullName =
+    user?.displayName ||
+    (user?.firstName && user?.lastName
+      ? `${user.firstName} ${user.lastName}`
+      : "NA");
+
+  const userData = {
+    name: fullName,
+    email: user?.email || "NA",
+    avatar: user?.photoURL || null,
+  };
+
   return (
-    <Sidebar variant="floating" collapsible="icon" {...props}>
-
-      {/* //Logo area and redirection home page */}
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
-              <a href="#">
-                <ArrowUpCircleIcon className="h-5 w-5" />
-                <span className="text-base font-semibold">Nomadic</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-
-        </SidebarMenu>
+        <TeamSwitcher
+          teams={[
+            { name: "Acme Inc", logo: GalleryVerticalEnd, plan: "Enterprise" },
+            { name: "Acme Corp.", logo: AudioWaveform, plan: "Startup" },
+            { name: "Evil Corp.", logo: Command, plan: "Free" },
+          ]}
+        />
       </SidebarHeader>
 
-
-
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        {/* <NavDocuments items={data.documents} /> */}
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={navMainItems} />
       </SidebarContent>
+
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
+
+      <SidebarRail />
     </Sidebar>
   );
 }

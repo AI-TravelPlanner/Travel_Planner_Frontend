@@ -48,7 +48,7 @@ export default function ImageCarousel({ className = "h-screen w-full" }) {
         overflowX: "hidden",
       }}
     >
-      {/* ✅ Background Image Layer */}
+      {/* Background Image Layer */}
       <AnimatePresence>
         <motion.div
           key={index}
@@ -67,7 +67,7 @@ export default function ImageCarousel({ className = "h-screen w-full" }) {
         />
       </AnimatePresence>
 
-      {/* ✅ Text Layer */}
+      {/*Text Layer */}
       <div className="relative z-10 text-center px-4 sm:px-6 md:px-8">
         {hasAnimated ? (
           <>
@@ -90,7 +90,7 @@ export default function ImageCarousel({ className = "h-screen w-full" }) {
               initial={{ opacity: 0, y: 60 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
-                duration: 1.5,
+                duration: 1,
                 ease: "easeOut",
               }}
             >
@@ -101,7 +101,7 @@ export default function ImageCarousel({ className = "h-screen w-full" }) {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
-                duration: 1.5,
+                duration: 1,
                 delay: 0.4,
                 ease: "easeOut",
               }}
@@ -117,31 +117,49 @@ export default function ImageCarousel({ className = "h-screen w-full" }) {
         )}
       </div>
 
-      {/* ✅ Navigation Dots */}
-      <div className="absolute top-50% right-6 -translate-x-1/2 flex flex-col gap-5">
+      {/* Navigation Dots */}
+      <div
+        className="
+          absolute
+          top-50% right-4
+          flex flex-col gap-4
+          sm:gap-3
+          md:gap-4
+        "
+      >
         {images.map((_, i) => (
           <button
             key={i}
             onClick={() => goTo(i)}
-            className={`w-3 h-3 rounded-full cursor-pointer transition-all duration-300 ${
+            className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full cursor-pointer transition-all duration-300 ${
               i === index
-                ? "bg-white/70 scale-150 shadow-lg"
+                ? "bg-white/80 scale-150 shadow-lg"
                 : "bg-white/30 hover:bg-white/50"
             }`}
           />
         ))}
       </div>
 
-      {/* ✅ Play / Pause Button */}
-      <div className="absolute bottom-6 right-6">
+      {/* Play / Pause Button*/}
+      <div
+        className="
+          absolute bottom-4 right-4
+          sm:bottom-6 sm:right-6
+          md:bottom-8 md:right-8
+        "
+      >
         <button
           onClick={() => setIsPlaying((prev) => !prev)}
-          className="p-3 rounded-full bg-white/30 hover:bg-white/50 transition shadow-md cursor-pointer"
+          className="
+            p-2 sm:p-3 md:p-4
+            rounded-full bg-white/30 hover:bg-white/50
+            transition shadow-md cursor-pointer
+          "
         >
           {isPlaying ? (
-            <Pause className="w-5 h-5 text-black" />
+            <Pause className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-black" />
           ) : (
-            <Play className="w-5 h-5 text-black" />
+            <Play className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-black" />
           )}
         </button>
       </div>

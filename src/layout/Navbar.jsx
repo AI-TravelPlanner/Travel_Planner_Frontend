@@ -141,13 +141,18 @@ export default function Navbar() {
               {user.photoURL ? (
                 <AvatarImage
                   src={user.photoURL}
-                  alt={user.displayName || user.name || user.email || "User"}
+                  alt={user.displayName || user.email || "User"}
                 />
               ) : (
                 <AvatarFallback>
-                  {(user.displayName || user.name || user.email || "NA")
-                    .slice(0, 2)
-                    .toUpperCase()}
+                  {user.displayName
+                    ? user.displayName
+                        .split(" ")
+                        .slice(0, 2)
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()
+                    : "NA"}
                 </AvatarFallback>
               )}
             </Avatar>
@@ -164,14 +169,27 @@ export default function Navbar() {
               </Button>
             </Link>
           ) : (
-            <Button
-              onClick={handleLogout}
-              variant="ghost"
-              size="sm"
-              className="text-sm cursor-pointer bg-gray-200 hover:bg-gray-300 px-4 py-4"
-            >
-              Logout
-            </Button>
+            <>
+              {/* Dashboard Button (only visible when logged in) */}
+              <Link to="/dashboard">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-sm cursor-pointer bg-gray-200 hover:bg-gray-300 px-4 py-4"
+                >
+                  Dashboard
+                </Button>
+              </Link>
+
+              <Button
+                onClick={handleLogout}
+                variant="ghost"
+                size="sm"
+                className="text-sm cursor-pointer bg-gray-200 hover:bg-gray-300 px-4 py-4"
+              >
+                Logout
+              </Button>
+            </>
           )}
 
           {/* Plan Trip Button */}
