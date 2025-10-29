@@ -9,6 +9,7 @@ import AppRoutes from "@/layout/AppRoutes";
 import { auth } from "@/firebase/firebaseConfig";
 import { setUser, logout } from "@/authSlice/authSlice";
 import "react-toastify/dist/ReactToastify.css";
+import { Toaster } from "sonner";
 
 function App() {
   const dispatch = useDispatch();
@@ -33,6 +34,7 @@ function App() {
     <BrowserRouter>
       <AppRoutes />
       <ToastContainer />
+      <Toaster richColors position="top-right" closeButton />
     </BrowserRouter>
   );
 }
