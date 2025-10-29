@@ -16,7 +16,7 @@ const Layout = () => {
             {/* <main className="flex-grow px-4 md:px-6 pt-4">
                 <Outlet /> */}
             <main>
-                {children}
+                <Outlet />
             </main>
             <Footer7 />
         </div>
