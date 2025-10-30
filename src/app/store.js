@@ -4,6 +4,7 @@ import aliasTemplatesReducer from '@/kanban-feature/template-board-suggestions/a
 import filterReducer from '@/redux-slices/filterSlice'
 import authReducer from "@/authSlice/authSlice"
 import tripReducer from '@/redux-slices/tripSlice'
+import tripFormReducer from '@/redux-slices/tripSearchSlice'
 
 const store = configureStore({
     reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
         aliasTemplates: aliasTemplatesReducer,
         filter: filterReducer,
         trips: tripReducer, 
+        tripSearch: tripFormReducer
     },
 })
 
