@@ -12,8 +12,6 @@ import { Card } from '@/components/ui/card'
 
 function DragAndDrop() {
 
-
-
     const calendarRef = useRef(null);
     const [testDate, setTestDate] = useState("");
 
@@ -28,7 +26,7 @@ function DragAndDrop() {
     // Determine if anything is being dragged
     const isAnyDragging = activeId !== null
 
-    // NEW: calendar & carousel API state
+    // calendar & carousel API state
     const [calendarApi, setCalendarApi] = useState(null)
     const [cardsApi, setCardsApi] = useState(null)
 
@@ -46,9 +44,11 @@ function DragAndDrop() {
             console.log("Cards carousel selected snap index:", snapIdx);
             console.log("Cards carousel previous snap index:", prevSnapIdx);
 
+            const scrollAmount = Math.abs(snapIdx - prevSnapIdx);
+
             const direction = snapIdx > prevSnapIdx ? 1 : -1;
 
-            calendarRef.current?.scrollByOffset(direction);
+            calendarRef.current?.scrollByOffset(direction * scrollAmount);
         };
 
         // Attach listener
@@ -60,7 +60,8 @@ function DragAndDrop() {
         };
     }, [cardsApi, calendarRef]);
 
-    // NEW: central selected date state (ISO string)
+
+    // central selected date state (ISO string)
     // Initialize from the leftmost board's date if present
     const initialSelectedISO = boardOrder && boardOrder.length > 0 && boards[boardOrder[0]] ? boards[boardOrder[0]].date : new Date().toISOString()
     const [selectedDate, setSelectedDate] = useState(initialSelectedISO)

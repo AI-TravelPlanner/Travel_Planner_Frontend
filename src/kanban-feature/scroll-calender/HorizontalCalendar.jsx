@@ -128,7 +128,6 @@ const HorizontalCalendar = forwardRef(
         const scrollCalendarByOffset = useCallback(
             (direction) => {
                 if (!calendarApi) return;
-                if (direction !== 1 && direction !== -1) return;
 
                 const currentIndex = calendarApi.selectedScrollSnap();
                 const newIndex = Math.max(

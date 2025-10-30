@@ -179,9 +179,9 @@ export const CardEditSheet = ({ open, onOpenChange, board }) => {
                 </SheetHeader>
 
                 {/* Main three-pane grid */}
-                <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 p-6 overflow-hidden">
+                <div className="grid grid-cols-12 gap-6 p-6 overflow-hidden">
                     {/* LEFT: Attractions list */}
-                    <div className="xl:col-span-4 flex flex-col min-h-0">
+                    <div className="col-span-4 flex flex-col min-h-0">
                         <div className="flex items-end justify-between gap-2">
                             <div className="flex-1">
                                 <Label htmlFor="hotelName" className="text-xs">Hotel</Label>
@@ -230,7 +230,7 @@ export const CardEditSheet = ({ open, onOpenChange, board }) => {
                     </div>
 
                     {/* MIDDLE: Edit form */}
-                    <div className="xl:col-span-5 min-h-0">
+                    <div className="col-span-5 min-h-0">
                         <div className="flex items-center justify-between">
                             <h4 className="text-sm font-semibold">
                                 {showForm ? (selectedItemId ? "Edit attraction" : "New attraction") : "Select an attraction"}
@@ -313,7 +313,7 @@ export const CardEditSheet = ({ open, onOpenChange, board }) => {
                     </div>
 
                     {/* RIGHT: Live Preview (sticky) */}
-                    <div className="xl:col-span-3">
+                    <div className="col-span-3">
                         <div className="xl:sticky xl:top-6 space-y-3">
                             <h4 className="text-sm font-semibold">Live Preview</h4>
                             <DayCardPreview hotelName={hotelName} items={previewItems} />
