@@ -1,10 +1,13 @@
 import React from 'react'
-import { useState, useEffect } from "react"
 import { useSortable, defaultAnimateLayoutChanges } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { AttractionItem } from '@/components/AttractionItem'
+import { useSelector } from 'react-redux'
 
 export default function SortableItem({ id, boardId, isAnyDragging }) {
+    const selectedTrip = useSelector((state) => state.trips.selectedTrip)
+    const activity = selectedTrip?.itinerary?.find(item => item.id === id)
+
     const {
         attributes,
         listeners,
@@ -34,6 +37,10 @@ export default function SortableItem({ id, boardId, isAnyDragging }) {
         position: 'relative',
     }
 
+    if (!activity) {
+        return null
+    }
+
     return (
         <div
             ref={setNodeRef}
@@ -43,13 +50,13 @@ export default function SortableItem({ id, boardId, isAnyDragging }) {
             data-item-id={id}
         >
             <AttractionItem
-                image="https://i.pinimg.com/736x/21/83/ab/2183ab07ff2e0e561e0e0738705d4343.jpg"
-                duration="2 hours"
-                timeline="2 hours"
-                timeOfDay="Morning"
-                location="Old Town, Rome"
-                description="Explore one of Rome's most iconic landmarks, rich with ancient history and classical architecture dating back to the Roman Empire."
-                title={id}
+                image={activity.image}
+                duration={activity.duration}
+                timeline={activity.duration}
+                timeOfDay={activity.timeOfDay}
+                location={activity.location}
+                description={activity.description}
+                title={activity.name}
                 isDragging={isDragging || isAnyDragging}
             />
         </div>

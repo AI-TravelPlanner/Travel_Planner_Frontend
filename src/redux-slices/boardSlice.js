@@ -83,6 +83,31 @@ const boardsSlice = createSlice({
     reducers: {
 
         /**
+         * Load boards from a selected trip
+         * Payload: array of board objects from trip.boards
+         */
+        loadTripBoards: (state, action) => {
+            const tripBoards = action.payload
+            if (!tripBoards || tripBoards.length === 0) {
+                return
+            }
+
+            // Clear existing boards
+            state.boards = {}
+            state.boardOrder = []
+
+            // Load trip boards
+            tripBoards.forEach((board) => {
+                state.boards[board.id] = {
+                    id: board.id,
+                    date: board.date,
+                    items: board.items || [],
+                }
+                state.boardOrder.push(board.id)
+            })
+        },
+
+        /**
          * Set every board's date such that board at boardOrder[i] receives baseDate + i days
          * Payload: { baseDateISO: string }   // ISO string representation
          */
@@ -267,6 +292,5 @@ const boardsSlice = createSlice({
 })
 // export the generated action creators and reducer
 export const { moveItemWithinBoard, moveItemAcrossBoards, moveBoard, addKanbanBoard, removeKanbanBoard, setBoardDatesFromBase,
-    setBoardDate, addEmptyBoard } = boardsSlice.actions
+    setBoardDate, addEmptyBoard, loadTripBoards } = boardsSlice.actions
 export default boardsSlice.reducer
-

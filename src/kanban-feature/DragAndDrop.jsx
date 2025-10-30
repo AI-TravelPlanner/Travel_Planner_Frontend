@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Board from './Board'
 import { useSelector, useDispatch } from 'react-redux'
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable'
-import { moveBoard, moveItemWithinBoard, moveItemAcrossBoards, setBoardDatesFromBase, addEmptyBoard } from '@/redux-slices/boardSlice'
+import { moveBoard, moveItemWithinBoard, moveItemAcrossBoards, setBoardDatesFromBase, addEmptyBoard, loadTripBoards } from '@/redux-slices/boardSlice'
 import SortableItem from './SortableItem'
 import { DndContext, DragOverlay, rectIntersection } from '@dnd-kit/core'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
@@ -21,6 +21,7 @@ function DragAndDrop() {
 
 
     const { boards, boardOrder } = useSelector((state) => state.boards)
+    const selectedTrip = useSelector((state) => state.trips.selectedTrip)
     const dispatch = useDispatch()
     const [activeId, setActiveId] = useState(null)
     const [activeType, setActiveType] = useState(null)
@@ -31,6 +32,12 @@ function DragAndDrop() {
     // NEW: calendar & carousel API state
     const [calendarApi, setCalendarApi] = useState(null)
     const [cardsApi, setCardsApi] = useState(null)
+
+    useEffect(() => {
+        if (selectedTrip && selectedTrip.boards) {
+            dispatch(loadTripBoards(selectedTrip.boards))
+        }
+    }, [selectedTrip, dispatch])
 
     useEffect(() => {
         if (!cardsApi) return;
@@ -269,12 +276,11 @@ function DragAndDrop() {
                     className="w-full"
                     orientation="horizontal"
                 >
-                    <CarouselContent className="-ml-4"> {/* Negative margin to align items correctly */}
+                    <CarouselContent className="-ml-4">
 
                         <SortableContext items={boardOrder} strategy={rectSortingStrategy}>
                             {boardOrder.map((boardId) => (
                                 boards[boardId] && (
-                                    // ✨ CHANGE: Each board is now a CarouselItem
                                     <CarouselItem key={boardId} className="pl-4 basis-auto">
                                         <Board
                                             board={boards[boardId]}
