@@ -29,18 +29,15 @@ export const addTemplateToKanbanAndRemove = createAsyncThunk(
 
 
 /**
- * Thunk to move a board from the Kanban view (boardsSlice) back to the 
- * template list (aliasTemplatesSlice).
- * * Payload: The ID of the board to be reserved (string).
- */
+* Thunk to move a board from the Kanban view (boardsSlice) back to the 
+* template list (aliasTemplatesSlice).
+* * Payload: The ID of the board to be reserved (string).
+*/
 export const reserveBoardToTemplate = createAsyncThunk(
     'boards/reserveToTemplate',
     async (boardId, { getState, dispatch }) => {
-        // getState returns the full root state object
-        const state = getState(); 
-
-        // 1. Retrieve the *full board object* before removing it
-        // Access state.boards (Kanban slice) and its boards dictionary
+        // ... (code to get state and boardToReserve is correct)
+        const state = getState();
         const boardToReserve = state.boards.boards[boardId];
 
         if (!boardToReserve) {
@@ -51,11 +48,11 @@ export const reserveBoardToTemplate = createAsyncThunk(
         // --- TRANSACTION ---
 
         // 2. Dispatch action to the DESTINATION SLICE (aliasTemplatesSlice)
-        // Note: You must ensure 'addTemplate' is imported from aliasTemplatesSlice.js
         dispatch(addTemplate(boardToReserve));
 
         // 3. Dispatch action to the SOURCE SLICE (boardsSlice)
-        // Note: You must ensure 'removeKanbanBoard' is imported from boardsSlice.js
-        dispatch(removeKanbanBoard(boardId));
+        //    *** THIS IS THE FIX ***
+        // Pass an object to keep the items in itemsById
+        dispatch(removeKanbanBoard({ boardId, keepItems: true }));
     }
 );
