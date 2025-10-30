@@ -37,8 +37,13 @@ export default function Dashboard() {
 
     return (
         <SidebarProvider>
-                <SidebarInset>
-                <div className="sticky bg-red-200 top-2 flex flex-col gap-4 p-4 min-h-0 overflow-y-auto thin-scrollbar">
+                <SidebarInset className="flex h-dvh min-h-0 flex-col overflow-hidden"
+                    style={{
+                    // Single source of truth for sizes:
+                    // tweak these to resize every card everywhere
+                    '--kanban-card-w-base': '200px',
+                    '--kanban-card-h-base': '240px',
+                }}>
                     
                     {/* UPDATED: Added ref for auto-scroll and expanded state indicator */}
                     {selectedTrip && (
@@ -133,7 +138,6 @@ export default function Dashboard() {
                             )}
                         </div>
                     )}
-                </div>
                 {/* Top block: not scrollable, sticks because below container scrolls */}
                 <div className="shrink-0 p-4">
                     <div className="grid auto-rows-min gap-2 px-10 md:grid-cols-1">
@@ -144,10 +148,13 @@ export default function Dashboard() {
                 </div>
 
                 {/* Only this area scrolls */}
-                <div className="flex-1 overflow-y-auto p-4 thin-scrollbar">
+                <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 thin-scrollbar">
                     <TemplateBoardList />
                 </div>
             </SidebarInset>
         </SidebarProvider>
     )
 }
+
+
+
