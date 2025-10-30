@@ -17,6 +17,7 @@ export const generateTrip = async (prompt) => {
         // Use the apiClient instance
         const response = await apiClient.post('/plan/generate', { prompt: prompt });
         // 'axios' automatically gives you the JSON data in the 'data' property
+        console.log('Trip generated:', response.data);
         return response.data;
     } catch (error) {
         // 'axios' automatically throws an error for bad statuses (4xx, 5xx)

@@ -3,6 +3,8 @@ import { createAsyncThunk, nanoid } from '@reduxjs/toolkit';
 import { addKanbanBoard, removeKanbanBoard } from '@/redux-slices/boardSlice'; // From the Kanban slice
 import { removeTemplate, addTemplate } from './aliasTemplatesSlice'; // From the Template slice
 
+
+
 /**
  * Thunk to copy a template board to the Kanban slice AND remove it from the template list.
  * Payload: The original board object from the aliasTemplatesSlice.

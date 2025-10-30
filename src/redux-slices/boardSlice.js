@@ -3,7 +3,20 @@ import { createSlice, nanoid } from '@reduxjs/toolkit'
 // import arrayMove utility to reorder arrays immutably
 import { arrayMove } from '@dnd-kit/sortable'
 import { addDays, formatISO, parseISO } from 'date-fns'
+import { generateTrip } from '@/api/apiService'
+import { createAsyncThunk } from '@reduxjs/toolkit'
 
+export const fetchTripPlan = createAsyncThunk(
+  'boards/fetchTripPlan',
+  async (prompt, { rejectWithValue }) => {
+    try {
+      const data = await generateTrip(prompt)
+      return data // this will be the backend JSON
+    } catch (err) {
+      return rejectWithValue(err.message)
+    }
+  }
+)
 
 const baseDate = new Date() // default base
 
@@ -30,6 +43,8 @@ const baseDate = new Date() // default base
  */
 // initial application state for boards and their order
 const initialState = {
+    loading: false,
+    error: null,
     // object mapping board id -> board data
     boards: {
         // example board with id, display title and ordered array of item ids
@@ -92,6 +107,48 @@ const initialState = {
         'item-22': { id: 'item-16', image: 'https://i.pinimg.com/736x/21/83/ab/2183ab07ff2e0e561e0e0738705d4343.jpg', title: 'Sample 16', duration: '3 hours', timeline: '2 hours', timeOfDay: 'Evening', location: 'Texas, USA', description: "Explore one of Rome's most iconic landmarks, rich with ancient history and classical architecture dating back to the Roman Empire." },
         
     },
+}
+
+
+
+function transformTripToBoards(tripData) {
+  const boards = {}
+  const boardOrder = []
+  const itemsById = {}
+  let itemCounter = 1
+
+  for (const day of tripData.days || []) {
+    const boardId = `board${day.dayNumber}`
+    boardOrder.push(boardId)
+
+    const items = []
+
+    // add each activity as an item
+    for (const activity of day.activities || []) {
+      const itemId = `item-${itemCounter++}`
+      items.push(itemId)
+      itemsById[itemId] = {
+        id: itemId,
+        image: activity.image || 'https://i.pinimg.com/736x/21/83/ab/2183ab07ff2e0e561e0e0738705d4343.jpg',
+        title: activity.name || '',
+        duration: activity.duration || '',
+        timeOfDay: activity.timeOfDay || '',
+        location: activity.location || '',
+        description: activity.description || '',
+      }
+    }
+
+    boards[boardId] = {
+      id: boardId,
+      title: `Day ${day.dayNumber}`,
+      date: day.date || new Date().toISOString(),
+      hotelName: day.hotel?.hotelName || 'Unknown Hotel',
+      weather: day.weather || null,
+      items,
+    }
+  }
+
+  return { boards, boardOrder, itemsById }
 }
 
 
@@ -350,9 +407,30 @@ const boardsSlice = createSlice({
             }
         },
     },
+    extraReducers: (builder) => {
+    builder
+      .addCase(fetchTripPlan.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(fetchTripPlan.fulfilled, (state, action) => {
+        state.loading = false
+        const tripData = action.payload
+        const { boards, boardOrder, itemsById } = transformTripToBoards(tripData)
+        // ✅ replace the dummy data with the trip data
+        state.boards = boards
+        state.boardOrder = boardOrder
+        state.itemsById = itemsById
+      })
+      .addCase(fetchTripPlan.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload
+      })
+  },
 })
 // export the generated action creators and reducer
 export const { moveItemWithinBoard, moveItemAcrossBoards, moveBoard, addKanbanBoard, removeKanbanBoard, setBoardDatesFromBase,
     setBoardDate, addEmptyBoard, updateBoardHotelName, addAttractionToBoard, updateAttractionItem } = boardsSlice.actions
+
 export default boardsSlice.reducer
 

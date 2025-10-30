@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 // 1. Import the function we want to test
 import { generateTrip } from '@/api/apiService';
+import { fetchTripPlan } from '@/redux-slices/boardSlice';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom'
 
 function DemoApi() {
     // 2. Setup local state for the form, data, and loading
@@ -8,11 +11,30 @@ function DemoApi() {
     const [tripPlan, setTripPlan] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const navigate = useNavigate()
+
+    const dispatch = useDispatch()
+
+
+    const handleClick = async () => {
+    try {
+      // Dispatch async thunk and wait for the result
+      await dispatch(fetchTripPlan(prompt)).unwrap()
+
+      // ✅ Redirect only after Redux state is updated with fetched trip
+      navigate('/dashboard')
+    } catch (err) {
+      console.error('Failed to generate trip:', err)
+      alert('Something went wrong while generating your trip.')
+    }
+  }
+
 
     /**
      * 3. This function will be called when the button is clicked
      */
     const handleGenerateClick = async () => {
+        
         setIsLoading(true);
         setError(null);
         setTripPlan(null);
@@ -34,6 +56,7 @@ function DemoApi() {
     return (
         <div style={{ padding: '20px' }}>
             <h1>Trip Plan Generator (Test)</h1>
+            <p>a one day trip to yukon</p>
             <textarea
                 rows="3"
                 cols="50"
@@ -43,7 +66,7 @@ function DemoApi() {
             />
             <br />
             <button
-                onClick={handleGenerateClick}
+                onClick={handleClick}
                 disabled={isLoading}
             >
                 {isLoading ? 'Generating...' : 'Generate Trip'}
