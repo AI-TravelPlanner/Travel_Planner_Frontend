@@ -25,7 +25,9 @@ import {
 
 import { useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom';
-
+import { SidebarMenu } from "@/components/ui/sidebar";
+import { SidebarMenuButton } from "@/components/ui/sidebar";
+import { SidebarMenuItem } from "@/components/ui/sidebar";
 
 export function AppSidebar({ ...props }) {
   const user = useSelector((state) => state.auth.user); // Firebase user
@@ -54,20 +56,25 @@ export function AppSidebar({ ...props }) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          className="group flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-accent/60 transition-colors cursor-pointer"
-          aria-label="Go to Home"
-        >
-          {/* Logo*/}
-          <div className="shrink-0">
-            <Logo />
-          </div>
-          <span className="text-sm font-semibold tracking-tight text-foreground">
-            Nomad Group
-          </span>
-        </button>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              size="lg"
+              className="cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              {/* Icon / Logo: stays visible in collapsed mode */}
+              <div className="flex size-8 items-center justify-center rounded-lg">
+                <Logo />
+              </div>
+
+              {/* Text: automatically hides when sidebar is collapsed to icon */}
+              <span className="text-sm font-semibold tracking-tight text-foreground group-data-[collapsible=icon]:hidden">
+                Nomad Group
+              </span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
 
       <SidebarContent>
