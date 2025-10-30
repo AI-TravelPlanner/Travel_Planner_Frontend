@@ -1,7 +1,10 @@
 // aliasTemplatesSlice.js
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = {
+const STORAGE_KEY = 'aliasTemplatesState';
+
+// We rename your original initialState to defaultState
+const defaultState = {
     // List of boards available to be copied into the main Kanban view
     availableTemplates: [
         {
@@ -18,11 +21,32 @@ const initialState = {
     ],
 }
 
+/**
+ * Loads the saved template list from localStorage.
+ */
+const loadStateFromStorage = () => {
+    try {
+        const serializedState = localStorage.getItem(STORAGE_KEY);
+        if (serializedState === null) {
+            // No state saved, return the default
+            return defaultState;
+        }
+        // Return the parsed state
+        return JSON.parse(serializedState);
+    } catch (err) {
+        console.error("Could not load template state from localStorage", err);
+        // Fallback to default
+        return defaultState;
+    }
+};
+
+// The initialState is now loaded from our function
+const initialState = loadStateFromStorage();
+
 const aliasTemplatesSlice = createSlice({
     name: 'aliasTemplates',
-    initialState,
+    initialState, // <-- This now loads from storage
     reducers: {
-
         /**
          * Action to add a board back to the template list (reverse operation).
          * Payload: The full board object to reserve.
@@ -47,7 +71,6 @@ const aliasTemplatesSlice = createSlice({
                 template => template.id !== templateId
             );
         },
-
     },
 })
 

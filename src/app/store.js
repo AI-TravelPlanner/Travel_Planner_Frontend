@@ -9,6 +9,8 @@ import tripFormReducer from '@/redux-slices/tripSearchSlice'
 
 const STORAGE_KEY = 'activeTripState';
 
+const TEMPLATES_STORAGE_KEY = 'aliasTemplatesState'; // Must match the slice key
+
 const store = configureStore({
     reducer: {
         auth: authReducer,
@@ -29,6 +31,12 @@ store.subscribe(() => {
         // We only want to save the 'boards' slice
         const serializedState = JSON.stringify(state.boards);
         localStorage.setItem(STORAGE_KEY, serializedState);
+
+        // --- ADD THIS ---
+        // Save the 'aliasTemplates' slice
+        const templatesState = JSON.stringify(state.aliasTemplates);
+        localStorage.setItem(TEMPLATES_STORAGE_KEY, templatesState);
+        // --- END OF ADDED CODE ---
     } catch (err) {
         console.error("Could not save state to localStorage", err);
     }
