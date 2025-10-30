@@ -118,3 +118,46 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Attach this to the TripSearchBar wrapper element */
+.ring-flash-wrap {
+  position: relative;               /* needed for ::after positioning */
+  border-radius: 1rem;              /* match your rounded-2xl */
+}
+
+/* The animated glow lives on an overlay, keeping the base shadow untouched */
+.ring-flash-wrap::after {
+  content: "";
+  position: absolute;
+  inset: -3px;                      /* small halo outside the card */
+  border-radius: inherit;
+  pointer-events: none;             /* don’t block clicks/inputs */
+  box-shadow: 0 0 0 0 rgba(234,179,8,0),
+              0 0 0 0 rgba(234,179,8,0);
+  /* no base shadow here; the card’s own shadow remains visible */
+}
+
+@keyframes ring-flash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(234,179,8,0),
+                0 0 0 0 rgba(234,179,8,0);
+  }
+  35% {
+    box-shadow: 0 0 0 3px rgba(8, 61, 234, 0.85),
+                0 0 18px 6px rgba(8, 230, 234, 0.28);
+  }
+  65% {
+    box-shadow: 0 0 0 3px rgba(8, 95, 234, 0.55),
+                0 0 12px 4px rgba(234,179,8,.16);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(234,179,8,0),
+                0 0 0 0 rgba(234,179,8,0);
+  }
+}
+
+/* Trigger class: longer duration + nicer easing */
+.ring-flash-once::after {
+  animation: ring-flash 1.35s cubic-bezier(0.22, 1, 0.36, 1) 1;
+}
+

@@ -6,6 +6,7 @@ const initialState = {
   checkIn: '',
   checkOut: '',
   travelers: '',
+  lastSubmitted: null,
 };
 
 export const tripSearchSlice = createSlice({
@@ -26,6 +27,11 @@ export const tripSearchSlice = createSlice({
     setTravelers: (state, action) => {
       state.travelers = action.payload;
     },
+    submitSearch: (state, action) => {
+      const { destination, checkIn, checkOut, travelers } = action.payload;
+      state.lastSubmitted = { destination, checkIn, checkOut, travelers };
+
+    },
     // You can also add a reducer to clear the search
     resetSearch: () => initialState,
   },
@@ -37,6 +43,7 @@ export const {
   setCheckIn,
   setCheckOut,
   setTravelers,
+  submitSearch,
   resetSearch,
 } = tripSearchSlice.actions;
 
