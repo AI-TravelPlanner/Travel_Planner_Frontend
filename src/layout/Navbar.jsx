@@ -20,8 +20,8 @@ import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/firebaseConfig";
 
 const navigationLinks = [
-  { href: "#", label: "Home" },
-  { href: "#", label: "Explore", active: true },
+  //{ href: "#", label: "Home" },
+  { href: "#", label: "Home", active: true },
 ];
 
 export default function Navbar() {
