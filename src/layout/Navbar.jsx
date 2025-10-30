@@ -33,7 +33,9 @@ export default function Navbar() {
     if (!user) {
       navigate("/auth");
     } else {
-      navigate("/plan-trip");
+      //navigate("/plan-trip");
+      // Search bar lives on Home; navigate there with a focus request
+      navigate("/", { state: { focusTripSearch: true } });
     }
   };
 

@@ -27,7 +27,6 @@ import {
     // optional: removeAttractionFromBoard
 } from "../redux-slices/boardSlice"
 import { toast } from "sonner"
-import { Check } from "lucide-react"
 
 // ---- Small preview item (read-only)
 const PreviewItem = ({ image, title, duration, timeline, timeOfDay }) => (

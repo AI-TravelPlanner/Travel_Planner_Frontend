@@ -9,24 +9,66 @@ import {
     setDestination,
     setCheckIn,
     setCheckOut,
-    setTravelers
+    setTravelers,
+    submitSearch
 } from "@/redux-slices/tripSearchSlice";
+import { toast } from "sonner"
+
+
+/* --- helpers --- */
+const parseYMD = (s) => {
+    if (!s) return null;
+    const [y, m, d] = s.split("-").map(Number);
+    return new Date(Date.UTC(y, m - 1, d));
+};
+const diffDaysUTC = (startStr, endStr) => {
+    const a = parseYMD(startStr);
+    const b = parseYMD(endStr);
+    if (!a || !b) return null;
+    const ms = b.getTime() - a.getTime();
+    const days = Math.round(ms / 86400000); // 24*60*60*1000
+    return Math.max(1, days); // at least a 1-day trip if same day
+};
+const plural = (n, s, p) => (Number(n) === 1 ? s : p);
 
 export const TripSearchBar = () => {
     // Get the dispatch function
     const dispatch = useDispatch();
 
     // Read the current state from the Redux store
-    // This selector (state.tripSearch) matches the key in your store.js
     const { destination, checkIn, checkOut, travelers } = useSelector((state) => state.tripSearch);
 
-    // This function now just reads from Redux state
     const handleSearch = () => {
-        // You can get the state again here, or just use the variables above
-        const currentState = { destination, checkIn, checkOut, travelers };
-        console.log("Searching with:", currentState);
+        // basic validation
+        if (!destination?.trim() || !checkIn || !checkOut || !travelers) {
+            toast.error("Please fill destination, dates, and travelers.");
+            return;
+        }
+        const days = diffDaysUTC(checkIn, checkOut);
+        if (days === null) {
+            toast.error("Please provide valid dates.");
+            return;
+        }
+        if (parseYMD(checkOut) <= parseYMD(checkIn)) {
+            toast.error("Check-out must be after check-in.");
+            return;
+        }
+
+        const t = Number(travelers);
+        if (!Number.isFinite(t) || t <= 0) {
+            toast.error("Travelers must be a positive number.");
+            return;
+        }
+
+        const prompt = `Plan a ${days}-day trip to ${destination} with ${t} ${plural(
+            t,
+            "traveler",
+            "travelers"
+        )}. Check-in: ${checkIn}. Check-out: ${checkOut}.`;
+
+        console.log("AI prompt:", prompt);
         // TODO: Dispatch an action to fetch results based on this state
-        // e.g., dispatch(fetchTrips(currentState));
+        dispatch(submitSearch({ destination, checkIn, checkOut, travelers }));
     };
 
     return (

@@ -6,6 +6,8 @@ import img2 from "../assets/image2.jpg";
 import img3 from "../assets/image3.jpg";
 import img4 from "../assets/image4.jpeg";
 import img5 from "../assets/image5.jpg";
+import { TripSearchBar } from "@/plan-trip/TripSearchBar";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function ImageCarousel({ className = "h-screen w-full" }) {
   const images = [img1, img2, img3, img4, img5];
@@ -34,6 +36,32 @@ export default function ImageCarousel({ className = "h-screen w-full" }) {
     const timer = setTimeout(() => setHasAnimated(true), 2500);
     return () => clearTimeout(timer);
   }, []);
+
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const searchWrapRef = useRef(null);
+
+  useEffect(() => {
+    if (location.state?.focusTripSearch) {
+      // Scroll search bar into view
+      searchWrapRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      // Focus the first interactive control inside
+      const el = searchWrapRef.current;
+      const firstFocusable = el?.querySelector('input, button, [tabindex]:not([tabindex="-1"])');
+      // Prevent scroll jump on focus (we just scrolled)
+      firstFocusable?.focus({ preventScroll: true });
+
+      // Trigger one-shot shine animation
+      el?.classList.remove("ring-flash-once"); // reset if already present
+      void el?.offsetWidth; // force reflow to restart animation
+      el?.classList.add("ring-flash-once");
+
+      // Clear the router state so it doesn’t re-trigger on back/forward
+      navigate(".", { replace: true, state: {} });
+    }
+  }, [location.state, navigate]);
 
   const goTo = (i) => {
     setIndex(i % images.length);
@@ -115,6 +143,16 @@ export default function ImageCarousel({ className = "h-screen w-full" }) {
             </motion.p>
           </>
         )}
+
+        {/* Trip Search Bar (front-most UI) */}
+        <div
+          ref={searchWrapRef}
+          className="ring-flash-wrap w-full max-w-5xl z-30 mt-50 shadow-xl/30"
+          onFocusCapture={() => setIsPlaying(false)}
+          onBlurCapture={() => setIsPlaying(true)}
+        >
+          <TripSearchBar />
+        </div>
       </div>
 
       {/* Navigation Dots */}
@@ -131,11 +169,10 @@ export default function ImageCarousel({ className = "h-screen w-full" }) {
           <button
             key={i}
             onClick={() => goTo(i)}
-            className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full cursor-pointer transition-all duration-300 ${
-              i === index
-                ? "bg-white/80 scale-150 shadow-lg"
-                : "bg-white/30 hover:bg-white/50"
-            }`}
+            className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full cursor-pointer transition-all duration-300 ${i === index
+              ? "bg-white/80 scale-150 shadow-lg"
+              : "bg-white/30 hover:bg-white/50"
+              }`}
           />
         ))}
       </div>
