@@ -3,6 +3,7 @@ import { createSlice, nanoid } from '@reduxjs/toolkit'
 // import arrayMove utility to reorder arrays immutably
 import { arrayMove } from '@dnd-kit/sortable'
 import { addDays, formatISO, parseISO } from 'date-fns'
+import { fetchTripPlan } from '../api/apiService';
 
 // The source JSON data provided by the user
 const sourceTripJson = {
@@ -481,19 +482,46 @@ const boardsSlice = createSlice({
             }
         },
 
-        /**
-         * Original reducer.
-         * Payload: { itemId, updatedFields }
-         */
-        updateAttractionItem: (state, action) => {
-            const { itemId, updatedFields } = action.payload
-            if (state.itemsById[itemId]) {
-                state.itemsById[itemId] = {
-                    ...state.itemsById[itemId],
-                    ...updatedFields,
+    },
+
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchTripPlan.pending, (state) => {
+                // Optional: You can set a loading status here
+                console.log('Fetching new trip plan...');
+            })
+            .addCase(fetchTripPlan.fulfilled, (state, action) => {
+
+                // --- THIS IS THE CRITICAL PART ---
+
+                // 1. Log exactly what the API gave us
+                console.log('API call successful. Payload received:');
+                console.log(JSON.stringify(action.payload, null, 2));
+
+                try {
+                    // 2. Try to run your *existing* normalize function
+                    const newState = normalizeData(action.payload);
+
+                    console.log('Normalization successful. Updating state.');
+
+                    // 3. If it works, return the new state
+                    // This *replaces* the entire 'boards' slice
+                    return newState;
+
+                } catch (error) {
+                    // 4. If normalizeData crashes, LOG THE ERROR
+                    console.error('CRITICAL: normalizeData function failed!', error);
+                    console.error('The payload above is what caused the crash.');
+
+                    // 5. Return the *old* state so the app doesn't crash
+                    return state;
                 }
-            }
-        },
+            })
+            .addCase(fetchTripPlan.rejected, (state, action) => {
+                // This now works thanks to our previous fix
+                console.error('Failed to fetch trip plan:', action.payload);
+            });
+
     },
 })
 
