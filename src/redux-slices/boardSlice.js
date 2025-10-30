@@ -87,6 +87,10 @@ const initialState = {
         'item-10': { id: 'item-10', image: 'https://i.pinimg.com/736x/21/83/ab/2183ab07ff2e0e561e0e0738705d4343.jpg', title: 'Sample 10', duration: '1.5 hours', timeline: '2 hours', timeOfDay: 'Morning', location: 'Tornoto, Canada', description: "Explore one of Rome's most iconic landmarks, rich with ancient history and classical architecture dating back to the Roman Empire." },
         'item-13': { id: 'item-13', image: 'https://i.pinimg.com/736x/21/83/ab/2183ab07ff2e0e561e0e0738705d4343.jpg', title: 'Sample 13', duration: '1 hours', timeline: '2 hours', timeOfDay: 'Afternoon', location: 'Mississauga, Canada', description: "Explore one of Rome's most iconic landmarks, rich with ancient history and classical architecture dating back to the Roman Empire." },
         'item-16': { id: 'item-16', image: 'https://i.pinimg.com/736x/21/83/ab/2183ab07ff2e0e561e0e0738705d4343.jpg', title: 'Sample 16', duration: '3 hours', timeline: '2 hours', timeOfDay: 'Evening', location: 'Texas, USA', description: "Explore one of Rome's most iconic landmarks, rich with ancient history and classical architecture dating back to the Roman Empire." },
+        'item-20': { id: 'item-16', image: 'https://i.pinimg.com/736x/21/83/ab/2183ab07ff2e0e561e0e0738705d4343.jpg', title: 'Sample 16', duration: '3 hours', timeline: '2 hours', timeOfDay: 'Evening', location: 'Texas, USA', description: "Explore one of Rome's most iconic landmarks, rich with ancient history and classical architecture dating back to the Roman Empire." },
+        'item-21': { id: 'item-16', image: 'https://i.pinimg.com/736x/21/83/ab/2183ab07ff2e0e561e0e0738705d4343.jpg', title: 'Sample 16', duration: '3 hours', timeline: '2 hours', timeOfDay: 'Evening', location: 'Texas, USA', description: "Explore one of Rome's most iconic landmarks, rich with ancient history and classical architecture dating back to the Roman Empire." },
+        'item-22': { id: 'item-16', image: 'https://i.pinimg.com/736x/21/83/ab/2183ab07ff2e0e561e0e0738705d4343.jpg', title: 'Sample 16', duration: '3 hours', timeline: '2 hours', timeOfDay: 'Evening', location: 'Texas, USA', description: "Explore one of Rome's most iconic landmarks, rich with ancient history and classical architecture dating back to the Roman Empire." },
+        
     },
 }
 
@@ -258,7 +262,25 @@ const boardsSlice = createSlice({
 
             // 1. Add to the boards dictionary
             state.boards[newBoard.id] = newBoard;
+            
+            // check the date of the last board, if it exists, set the date of the board added to be one day after 
+            // the last board's date
+            const lastBoardID = state.boardOrder[state.boardOrder.length - 1] 
+            const lastBoard = state.boards[lastBoardID];
+            if (lastBoard?.date){
+                newBoard.date = addDays(parseISO(lastBoard.date), 1).toISOString();
+            }
 
+            console.log("Card has items");
+            // check if the card's attraction items are in the items ID map.
+            newBoard.items.forEach((item) => {
+                if (!state.itemsById.hasOwnProperty(item)){
+                    console.log(`${item} not in items by ID`)
+                    // alias template card item has attraction items that are not in redux
+                    //state.itemsById[item] = 
+                }
+            });
+            
             // 2. Add to the boardOrder array (at the end)
             state.boardOrder.push(newBoard.id);
         },

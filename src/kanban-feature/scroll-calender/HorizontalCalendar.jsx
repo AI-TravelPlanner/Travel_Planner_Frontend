@@ -81,7 +81,7 @@ const HorizontalCalendar = forwardRef(
 
             try {
                 calendarApi.scrollTo(safeIndex);
-                console.log("Scrolled calendar to index", safeIndex);
+                //console.log("Scrolled calendar to index", safeIndex);
             } catch (err) {
                 console.warn("calendar scrollTo error", err);
             }
