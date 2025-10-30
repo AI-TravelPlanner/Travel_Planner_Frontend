@@ -1,19 +1,12 @@
-import React from "react";
-// Assuming you have shadcn/ui components available in these paths
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Users, Search } from "lucide-react";
-// Import Redux hooks and actions
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
-    setDestination,
-    setCheckIn,
-    setCheckOut,
-    setTravelers,
-    submitSearch
+    setDestination, setCheckIn, setCheckOut, setTravelers, submitSearch,
 } from "@/redux-slices/tripSearchSlice";
-import { toast } from "sonner"
-
+import { toast } from "sonner";
 
 /* --- helpers --- */
 const parseYMD = (s) => {
@@ -26,53 +19,64 @@ const diffDaysUTC = (startStr, endStr) => {
     const b = parseYMD(endStr);
     if (!a || !b) return null;
     const ms = b.getTime() - a.getTime();
-    const days = Math.round(ms / 86400000); // 24*60*60*1000
-    return Math.max(1, days); // at least a 1-day trip if same day
+    const days = Math.round(ms / 86400000);
+    return Math.max(1, days);
 };
 const plural = (n, s, p) => (Number(n) === 1 ? s : p);
+const isPositiveInt = (s) => /^\d+$/.test(s) && Number(s) > 0;
 
-export const TripSearchBar = () => {
-    // Get the dispatch function
+export const TripSearchBar = ({ onGeneratePrompt }) => {
     const dispatch = useDispatch();
 
-    // Read the current state from the Redux store
-    const { destination, checkIn, checkOut, travelers } = useSelector((state) => state.tripSearch);
+    // local-only until submit
+    const [destination, setDestinationLocal] = useState("");
+    const [checkIn, setCheckInLocal] = useState("");
+    const [checkOut, setCheckOutLocal] = useState("");
+    const [travelers, setTravelersLocal] = useState("");
 
-    const handleSearch = () => {
-        // basic validation
-        if (!destination?.trim() || !checkIn || !checkOut || !travelers) {
+    const validateTravelers = () => {
+        if (!isPositiveInt(travelers)) {
+            toast.error("Travelers must be a positive number.");
+            return false;
+        }
+        return true;
+    };
+
+    const handleSearch = (e) => {
+        e?.preventDefault();
+
+        if (!destination.trim() || !checkIn || !checkOut || !travelers) {
             toast.error("Please fill destination, dates, and travelers.");
             return;
         }
+        if (!validateTravelers()) return;
+
         const days = diffDaysUTC(checkIn, checkOut);
-        if (days === null) {
-            toast.error("Please provide valid dates.");
-            return;
-        }
-        if (parseYMD(checkOut) <= parseYMD(checkIn)) {
+        if (days === null || parseYMD(checkOut) <= parseYMD(checkIn)) {
             toast.error("Check-out must be after check-in.");
             return;
         }
 
+        // Optional prompt (kept, not used)
         const t = Number(travelers);
-        if (!Number.isFinite(t) || t <= 0) {
-            toast.error("Travelers must be a positive number.");
-            return;
-        }
+        const prompt = `Plan a ${days}-day trip to ${destination} with ${t} ${plural(t, "traveler", "travelers")}. Check-in: ${checkIn}. Check-out: ${checkOut}.`;
+        // onGeneratePrompt?.(prompt);
 
-        const prompt = `Plan a ${days}-day trip to ${destination} with ${t} ${plural(
-            t,
-            "traveler",
-            "travelers"
-        )}. Check-in: ${checkIn}. Check-out: ${checkOut}.`;
-
-        console.log("AI prompt:", prompt);
-        // TODO: Dispatch an action to fetch results based on this state
+        // Commit to Redux on submit
         dispatch(submitSearch({ destination, checkIn, checkOut, travelers }));
+        dispatch(setDestination(destination));
+        dispatch(setCheckIn(checkIn));
+        dispatch(setCheckOut(checkOut));
+        dispatch(setTravelers(travelers));
+
+        toast.success("Search saved.");
     };
 
     return (
-        <div className="flex  items-center justify-between bg-white rounded-2xl shadow-lg px-6 py-4 w-full max-w-5xl mx-auto space-y-4 md:space-y-0 md:space-x-4 backdrop-blur-sm">
+        <form
+            onSubmit={handleSearch}
+            className="flex items-center justify-between bg-white rounded-2xl shadow-lg px-6 py-4 w-full max-w-5xl mx-auto space-y-4 md:space-y-0 md:space-x-4 backdrop-blur-sm"
+        >
             {/* Destination */}
             <div className="flex flex-col pr-4 border-b md:border-b-0 md:border-r border-gray-200 flex-1 min-w-[150px]">
                 <label className="font-semibold text-gray-800 text-sm flex items-center gap-2">
@@ -81,68 +85,62 @@ export const TripSearchBar = () => {
                 <Input
                     placeholder="City or Destination"
                     className="border-none p-0 text-sm text-gray-600 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0"
-                    // Make it a controlled component
                     value={destination}
-                    // Dispatch an action on change
-                    onChange={(e) => dispatch(setDestination(e.target.value))}
+                    onChange={(e) => setDestinationLocal(e.target.value)}
                 />
             </div>
 
             {/* Check-In */}
             <div className="flex flex-col px-0 md:px-4 border-b md:border-b-0 md:border-r border-gray-200 flex-1 min-w-[150px]">
                 <label className="font-semibold text-gray-800 text-sm flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-gray-500" /> Check-In
+                    <Calendar className="w-4 h-4 text-gray-500" /> Start Date
                 </label>
                 <Input
                     type="date"
                     className="border-none p-0 text-sm text-gray-600 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0"
-                    // Make it a controlled component
                     value={checkIn}
-                    // Dispatch an action on change
-                    onChange={(e) => dispatch(setCheckIn(e.target.value))}
+                    onChange={(e) => setCheckInLocal(e.target.value)}
                 />
             </div>
 
             {/* Check-Out */}
             <div className="flex flex-col px-0 md:px-4 border-b md:border-b-0 md:border-r border-gray-200 flex-1 min-w-[150px]">
                 <label className="font-semibold text-gray-800 text-sm flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-gray-500" /> Check-Out
+                    <Calendar className="w-4 h-4 text-gray-500" /> End Date
                 </label>
                 <Input
                     type="date"
                     className="border-none p-0 text-sm text-gray-600 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0"
-                    // Make it a controlled component
                     value={checkOut}
-                    // Dispatch an action on change
-                    onChange={(e) => dispatch(setCheckOut(e.target.value))}
+                    onChange={(e) => setCheckOutLocal(e.target.value)}
                 />
             </div>
 
-            {/* Travelers */}
+            {/* Travelers — text + custom validation with toast */}
             <div className="flex flex-col px-0 md:px-4 flex-1 min-w-[150px]">
                 <label className="font-semibold text-gray-800 text-sm flex items-center gap-2">
                     <Users className="w-4 h-4 text-gray-500" /> Travelers
                 </label>
                 <Input
+                    type="text"
+                    inputMode="numeric"
                     placeholder="Add Guests"
                     className="border-none p-0 text-sm text-gray-600 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0"
-                    // Make it a controlled component
                     value={travelers}
-                    // Dispatch an action on change
-                    onChange={(e) => dispatch(setTravelers(e.target.value))}
+                    onChange={(e) => setTravelersLocal(e.target.value)} // allow any input
+                    onBlur={validateTravelers}   // toast on non-number when the user leaves the field
                 />
             </div>
 
-            {/* Search Button */}
+            {/* Search */}
             <div className="pl-0 md:pl-4 w-full md:w-auto">
                 <Button
+                    type="submit"
                     className="bg-[#4b1812] hover:bg-[#3a120e] text-white font-medium rounded-full px-6 py-5 flex items-center justify-center gap-2 w-full"
-                    onClick={handleSearch}
                 >
                     <Search className="w-4 h-4" /> Search
                 </Button>
             </div>
-        </div>
-    )
-}
-
+        </form>
+    );
+};
