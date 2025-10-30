@@ -81,7 +81,7 @@ const HorizontalCalendar = forwardRef(
 
             try {
                 calendarApi.scrollTo(safeIndex);
-                console.log("Scrolled calendar to index", safeIndex);
+                //console.log("Scrolled calendar to index", safeIndex);
             } catch (err) {
                 console.warn("calendar scrollTo error", err);
             }
@@ -128,7 +128,6 @@ const HorizontalCalendar = forwardRef(
         const scrollCalendarByOffset = useCallback(
             (direction) => {
                 if (!calendarApi) return;
-                if (direction !== 1 && direction !== -1) return;
 
                 const currentIndex = calendarApi.selectedScrollSnap();
                 const newIndex = Math.max(

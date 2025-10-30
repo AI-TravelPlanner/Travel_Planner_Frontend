@@ -7,12 +7,10 @@ import SortableItem from './SortableItem'
 import { DndContext, DragOverlay, rectIntersection } from '@dnd-kit/core'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import HorizontalCalendar from './scroll-calender/HorizontalCalendar'
-import { parseISO } from 'date-fns'
 import { PlaceholderAttractionCard } from '@/components/PlaceholderAttractionCard'
+import { Card } from '@/components/ui/card'
 
 function DragAndDrop() {
-
-
 
     const calendarRef = useRef(null);
     const [testDate, setTestDate] = useState("");
@@ -28,7 +26,7 @@ function DragAndDrop() {
     // Determine if anything is being dragged
     const isAnyDragging = activeId !== null
 
-    // NEW: calendar & carousel API state
+    // calendar & carousel API state
     const [calendarApi, setCalendarApi] = useState(null)
     const [cardsApi, setCardsApi] = useState(null)
 
@@ -46,9 +44,11 @@ function DragAndDrop() {
             console.log("Cards carousel selected snap index:", snapIdx);
             console.log("Cards carousel previous snap index:", prevSnapIdx);
 
+            const scrollAmount = Math.abs(snapIdx - prevSnapIdx);
+
             const direction = snapIdx > prevSnapIdx ? 1 : -1;
 
-            calendarRef.current?.scrollByOffset(direction);
+            calendarRef.current?.scrollByOffset(direction * scrollAmount);
         };
 
         // Attach listener
@@ -60,7 +60,8 @@ function DragAndDrop() {
         };
     }, [cardsApi, calendarRef]);
 
-    // NEW: central selected date state (ISO string)
+
+    // central selected date state (ISO string)
     // Initialize from the leftmost board's date if present
     const initialSelectedISO = boardOrder && boardOrder.length > 0 && boards[boardOrder[0]] ? boards[boardOrder[0]].date : new Date().toISOString()
     const [selectedDate, setSelectedDate] = useState(initialSelectedISO)
@@ -221,7 +222,7 @@ function DragAndDrop() {
     }
 
     return (
-        <div style={{ padding: 10 }}>
+        <Card >
 
             <HorizontalCalendar
                 ref={calendarRef}
@@ -232,21 +233,6 @@ function DragAndDrop() {
                 suppressScrollRef={suppressSyncRef}
             />
 
-            {/* <div className="flex items-center gap-2 my-4">
-        <button
-          onClick={() => calendarRef.current?.scrollByOffset(-1)}
-          className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition"
-        >
-          ← Prev
-        </button>
-
-        <button
-          onClick={() => calendarRef.current?.scrollByOffset(1)}
-          className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition"
-        >
-          Next →
-        </button>
-      </div> */}
 
             <DndContext
                 collisionDetection={rectIntersection}
@@ -266,7 +252,6 @@ function DragAndDrop() {
                         // This is the crucial part to prevent drag conflicts!
                         watchDrag: activeId === null,
                     }}
-                    className="w-full"
                     orientation="horizontal"
                 >
                     <CarouselContent className="-ml-4"> {/* Negative margin to align items correctly */}
@@ -311,7 +296,7 @@ function DragAndDrop() {
                     ) : null}
                 </DragOverlay>
             </DndContext>
-        </div>
+        </Card>
     )
 }
 

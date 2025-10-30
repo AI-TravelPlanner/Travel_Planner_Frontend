@@ -133,14 +133,20 @@ export default function Dashboard() {
                             )}
                         </div>
                     )}
-
+                </div>
+                {/* Top block: not scrollable, sticks because below container scrolls */}
+                <div className="shrink-0 p-4">
                     <div className="grid auto-rows-min gap-2 px-10 md:grid-cols-1">
-                        <div className="w-full bg-muted/50 aspect-[16/2] rounded-xl" >
+                        <div className="w-full bg-muted/50 aspect-[16/2] rounded-xl">
                             <DragAndDrop />
                         </div>
                     </div>
                 </div>
-                <TemplateBoardList />
+
+                {/* Only this area scrolls */}
+                <div className="flex-1 overflow-y-auto p-4 thin-scrollbar">
+                    <TemplateBoardList />
+                </div>
             </SidebarInset>
         </SidebarProvider>
     )

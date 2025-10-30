@@ -16,15 +16,10 @@ export const addTemplateToKanbanAndRemove = createAsyncThunk(
         // 1. Create a deep copy and generate new unique IDs
         const copiedBoard = JSON.parse(JSON.stringify(templateBoard));
 
-        // Use a new ID for the Kanban board instance
-        copiedBoard.id = `board-${nanoid()}`;
 
-        // Ensure items also have new unique IDs
-        copiedBoard.items = copiedBoard.items.map(() => nanoid());
-
-        // --- TRANSACTION ---
-
-        // 2. Dispatch action to the TARGET SLICE (Kanban/boardsSlice)
+        // 2. Dispatch action to the TARGET SLICE (Kanban/boardsSlice). 
+        // There is no need to create a new ID for the card or items. Maintain the same
+        // ID for a card and an item throughout the lifetime of the web application
         dispatch(addKanbanBoard(copiedBoard));
 
         // 3. Dispatch action back to the SOURCE SLICE (aliasTemplatesSlice) to remove it
