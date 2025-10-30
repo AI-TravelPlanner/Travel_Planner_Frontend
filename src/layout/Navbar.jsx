@@ -145,14 +145,14 @@ export default function Navbar() {
                 />
               ) : (
                 <AvatarFallback>
-                  {user.displayName
-                    ? user.displayName
-                        .split(" ")
-                        .slice(0, 2)
-                        .map((n) => n[0])
-                        .join("")
-                        .toUpperCase()
-                    : "NA"}
+                  {(() => {
+                    if (!user.displayName) return "NA";
+                    const parts = user.displayName.trim().split(/\s+/);
+                    return parts
+                      .slice(0, 2)
+                      .map((n) => n[0].toUpperCase())
+                      .join("");
+                  })()}
                 </AvatarFallback>
               )}
             </Avatar>
