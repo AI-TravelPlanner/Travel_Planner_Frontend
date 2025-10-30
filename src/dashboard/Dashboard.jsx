@@ -1,11 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearSelectedTrip } from '@/redux-slices/tripSlice';
-import { AppSidebar } from "@/components/app-sidebar"
+
 import {
     SidebarInset,
     SidebarProvider,
-    SidebarTrigger,
 } from "@/components/ui/sidebar"
 import DragAndDrop from '@/kanban-feature/DragAndDrop';
 import TemplateBoardList from '@/kanban-feature/template-board-suggestions/TemplateBoard';
@@ -38,10 +37,7 @@ export default function Dashboard() {
 
     return (
         <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset>
-                <SidebarTrigger className="-ml-1" />
-
+                <SidebarInset>
                 <div className="sticky bg-red-200 top-2 flex flex-col gap-4 p-4 min-h-0 overflow-y-auto thin-scrollbar">
                     
                     {/* UPDATED: Added ref for auto-scroll and expanded state indicator */}
