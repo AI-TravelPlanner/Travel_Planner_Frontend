@@ -9,6 +9,8 @@ import ExplorePage from "@/dashboard/ExplorePage";
 import DemoPlanTrip from "@/plan-trip/planTrip";
 import Layout from "./Layout";
 import DashboardLayout from "@/dashboard/DashboardLayout";
+import DemoNaz from "@/api/demo";
+
 
 const AppRoutes = () => {
   const user = useSelector((state) => state.auth.user);
@@ -18,7 +20,9 @@ const AppRoutes = () => {
       {/* Public routes with Layout */}
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="/plan-trip" element={<DemoPlanTrip />} />
+        {/* <Route path="/plan-trip" element={<DemoPlanTrip />} /> */}
+        <Route path="/plan-trip" element={<DemoNaz />} />
+
         <Route path="/user-profile" element={<HomePage />} />
       </Route>
 
