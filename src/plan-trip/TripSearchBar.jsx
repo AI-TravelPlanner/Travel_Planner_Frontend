@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Users, Search } from "lucide-react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
+import { fetchTripPlan } from "@/api/apiService";
 import {
     setDestination, setCheckIn, setCheckOut, setTravelers, submitSearch,
 } from "@/redux-slices/tripSearchSlice";
@@ -27,12 +29,14 @@ const isPositiveInt = (s) => /^\d+$/.test(s) && Number(s) > 0;
 
 export const TripSearchBar = ({ onGeneratePrompt }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     // local-only until submit
     const [destination, setDestinationLocal] = useState("");
     const [checkIn, setCheckInLocal] = useState("");
     const [checkOut, setCheckOutLocal] = useState("");
     const [travelers, setTravelersLocal] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const validateTravelers = () => {
         if (!isPositiveInt(travelers)) {
@@ -42,7 +46,8 @@ export const TripSearchBar = ({ onGeneratePrompt }) => {
         return true;
     };
 
-    const handleSearch = (e) => {
+
+    const handleSearch = async (e) => {
         e?.preventDefault();
 
         if (!destination.trim() || !checkIn || !checkOut || !travelers) {
@@ -51,7 +56,7 @@ export const TripSearchBar = ({ onGeneratePrompt }) => {
         }
         if (!validateTravelers()) return;
 
-        const days = diffDaysUTC(checkIn, checkOut);
+        const days = diffDaysUTC(checkIn, checkOut) + 1;
         if (days === null || parseYMD(checkOut) <= parseYMD(checkIn)) {
             toast.error("Check-out must be after check-in.");
             return;
@@ -69,7 +74,21 @@ export const TripSearchBar = ({ onGeneratePrompt }) => {
         dispatch(setCheckOut(checkOut));
         dispatch(setTravelers(travelers));
 
-        toast.success("Search saved.");
+        setIsLoading(true);
+        const toastId = toast.loading("Generating your trip plan...");
+
+        try {
+            await dispatch(fetchTripPlan({ prompt })).unwrap();
+
+            toast.success("Trip generated! Redirecting…", { id: toastId });
+            navigate('/dashboard'); // Go to dashboard route
+
+        } catch (error) {
+            toast.error("Failed to generate trip. Please try again.", { id: toastId });
+        } finally {
+            setIsLoading(false);
+        }
+
     };
 
     return (
