@@ -5,6 +5,9 @@ import { arrayMove } from '@dnd-kit/sortable'
 import { addDays, formatISO, parseISO } from 'date-fns'
 import { fetchTripPlan } from '../api/apiService';
 
+
+const STORAGE_KEY = 'activeTripState'; // Must match the key from store.js
+
 // The source JSON data provided by the user
 const sourceTripJson = {
     location: 'Montreal, Canada',
@@ -63,6 +66,23 @@ const sourceTripJson = {
     ],
 }
 
+// --- THIS IS THE NEW LOADING LOGIC ---
+const loadStateFromStorage = () => {
+    try {
+        const serializedState = localStorage.getItem(STORAGE_KEY);
+        if (serializedState === null) {
+            // No state saved, normalize the default
+            return normalizeData(sourceTripJson);
+        }
+        // IMPORTANT: We parse the saved state. We DO NOT normalize it again,
+        // because we are saving the *already normalized state*.
+        return JSON.parse(serializedState);
+    } catch (err) {
+        console.error("Could not load state from localStorage", err);
+        // Fallback to default
+        return normalizeData(sourceTripJson);
+    }
+};
 
 /**
  * Normalizes the source JSON into the *original* state shape
@@ -136,7 +156,7 @@ const normalizeData = (tripJson) => {
 }
 
 // Generate the initial state
-const initialState = normalizeData(sourceTripJson)
+const initialState = loadStateFromStorage();
 
 // create a Redux slice named 'boards' with initial state and reducers
 const boardsSlice = createSlice({

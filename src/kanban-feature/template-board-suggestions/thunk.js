@@ -1,5 +1,5 @@
 // thunks.js (or similar file)
-import { createAsyncThunk, nanoid } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { addKanbanBoard, removeKanbanBoard } from '@/redux-slices/boardSlice'; // From the Kanban slice
 import { removeTemplate, addTemplate } from './aliasTemplatesSlice'; // From the Template slice
 
