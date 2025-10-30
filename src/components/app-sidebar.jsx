@@ -14,7 +14,7 @@ import {
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
+import Logo from "@/components/logo";
 import {
   Sidebar,
   SidebarContent,
@@ -24,9 +24,12 @@ import {
 } from "@/components/ui/sidebar";
 
 import { useSelector } from "react-redux";
+import { useNavigate } from 'react-router-dom';
+
 
 export function AppSidebar({ ...props }) {
   const user = useSelector((state) => state.auth.user); // Firebase user
+  const navigate = useNavigate();
 
   const navMainItems = [
     { title: "Members", icon: Users },
@@ -51,13 +54,20 @@ export function AppSidebar({ ...props }) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher
-          teams={[
-            { name: "Acme Inc", logo: GalleryVerticalEnd, plan: "Enterprise" },
-            { name: "Acme Corp.", logo: AudioWaveform, plan: "Startup" },
-            { name: "Evil Corp.", logo: Command, plan: "Free" },
-          ]}
-        />
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          className="group flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-accent/60 transition-colors cursor-pointer"
+          aria-label="Go to Home"
+        >
+          {/* Logo*/}
+          <div className="shrink-0">
+            <Logo />
+          </div>
+          <span className="text-sm font-semibold tracking-tight text-foreground">
+            Nomad Group
+          </span>
+        </button>
       </SidebarHeader>
 
       <SidebarContent>
