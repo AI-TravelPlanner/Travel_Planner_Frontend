@@ -5,7 +5,7 @@ import { Plus } from 'lucide-react'
 export const PlaceholderAttractionCard = ({ onAdd }) => {
     return (
         <Card
-            className="w-[180px] h-[var(--kanban-card-h-base)] flex flex-col justify-center items-center gap-2 border-dashed border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50/20 cursor-pointer transition-all duration-200 rounded-2xl"
+            className="w-[var(--kanban-card-h-base)] h-[var(--kanban-card-h-base)] flex flex-col justify-center items-center gap-2 border-dashed border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50/20 cursor-pointer transition-all duration-200 rounded-2xl"
             onClick={onAdd}
         >
             <CardContent className="flex flex-col items-center justify-center p-4">

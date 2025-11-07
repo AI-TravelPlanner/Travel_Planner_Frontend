@@ -221,6 +221,13 @@ function DragAndDrop() {
         console.log('Drag Start:', { id: event.active.id, type })
     }
 
+    // global carousel classnames to ensure that calendar and cards share same sizing
+    const carouselClassnames = {
+        carouselContent: "-ml-2",
+        carouselItem: "basis-[260px] pl-2 px-2"
+
+    }
+
     return (
         <Card >
 
@@ -231,6 +238,8 @@ function DragAndDrop() {
                 setCarouselApi={setCalendarApi}
                 calendarApi={calendarApi}
                 suppressScrollRef={suppressSyncRef}
+                carouselClassnames={carouselClassnames}
+
             />
 
 
@@ -254,13 +263,13 @@ function DragAndDrop() {
                     }}
                     orientation="horizontal"
                 >
-                    <CarouselContent className="-ml-4"> {/* Negative margin to align items correctly */}
+                    <CarouselContent className={carouselClassnames?.carouselContent || "-ml-2"}> {/* Negative margin to align items correctly */}
 
                         <SortableContext items={boardOrder} strategy={rectSortingStrategy}>
                             {boardOrder.map((boardId) => (
                                 boards[boardId] && (
-                                    // ✨ CHANGE: Each board is now a CarouselItem
-                                    <CarouselItem key={boardId} className="pl-4 basis-auto">
+
+                                    <CarouselItem key={boardId} className={carouselClassnames?.carouselItem || "basis-[240px] pl-2 px-2"}>
                                         <Board
                                             board={boards[boardId]}
                                             isAnyDragging={isAnyDragging}

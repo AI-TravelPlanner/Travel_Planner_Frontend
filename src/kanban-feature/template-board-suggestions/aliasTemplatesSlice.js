@@ -54,6 +54,7 @@ const aliasTemplatesSlice = createSlice({
         addTemplate: (state, action) => {
             const board = action.payload;
 
+
             // Check if the board is already in the list to prevent duplicates (optional)
             if (!state.availableTemplates.some(t => t.id === board.id)) {
                 if (board.items.length === 0) return; // Do not add empty templates

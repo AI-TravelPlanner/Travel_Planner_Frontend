@@ -28,10 +28,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ca } from "date-fns/locale";
 
 const HorizontalCalendar = forwardRef(
     (
-        { selectedDate: selectedDateProp, onSelectedDateChange, setCarouselApi, calendarApi, suppressScrollRef },
+        { selectedDate: selectedDateProp, onSelectedDateChange, setCarouselApi, calendarApi, suppressScrollRef, carouselClassnames },
         ref
     ) => {
         const selectedDate = selectedDateProp
@@ -201,16 +202,16 @@ const HorizontalCalendar = forwardRef(
                     </Button>
                 </div>
 
-                <Carousel setApi={setCarouselApi} opts={{ align: "start", loop: false }}>
-                    <CarouselContent className="flex px-0">
+                <Carousel setApi={setCarouselApi} opts={{ align: "start", loop: false }} >
+                    <CarouselContent className={carouselClassnames?.carouselContent || "-ml-2"}>
                         {days.map((date) => {
                             const isSelected = isSameDay(date, selectedDate);
                             return (
-                                <CarouselItem key={date.toISOString()} className="basis-auto">
+                                <CarouselItem key={date.toISOString()} className={carouselClassnames?.carouselItem || "basis-[240px] pl-2 px-2"}>
                                     <div
                                         onClick={() => handleDayClick(date)}
                                         className={cn(
-                                            "flex items-center justify-center gap-2 w-[180px] h-8 rounded-xl border-2 cursor-pointer transition-all duration-200",
+                                            "flex items-center justify-center gap-2 w-full h-9 rounded-xl border-2 cursor-pointer transition-all duration-200",
                                             isSelected
                                                 ? "bg-blue-600 text-white border-blue-800 shadow-md"
                                                 : "bg-gray-100 hover:bg-gray-200 border-transparent"
@@ -224,7 +225,7 @@ const HorizontalCalendar = forwardRef(
                                         >
                                             {format(date, "EE")}
                                         </div>
-                                        <div className="text-lg font-bold">{format(date, "d")}</div>
+                                        <div className="text-md font-bold">{format(date, "d")}</div>
                                     </div>
                                 </CarouselItem>
                             );

@@ -7,12 +7,19 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { GripHorizontal, Trash2 } from 'lucide-react'
 import { parseISO, format } from 'date-fns'
 import { CardEditSheet } from '@/components/CardEditSheet'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+} from "@/components/ui/carousel"
 
 export default function Board({ board, isAnyDragging, suppressSyncRef }) {
     const dispatch = useDispatch()
 
     const [editOpen, setEditOpen] = useState(false)
+    const [photoIndex, setPhotoIndex] = useState(0)
+    const [carouselApi, setCarouselApi] = useState(null)
 
     const {
         attributes,
@@ -47,13 +54,50 @@ export default function Board({ board, isAnyDragging, suppressSyncRef }) {
     }
 
     const boardDateDisplay = board?.date ? format(parseISO(board.date), 'MMM d, yyyy') : ''
+    const dayWeather = board?.weather || {}
 
+    // Safely extract hotel photos
+    const hotelPhotos = board?.hotel?.placeDetails?.photoUrls || []
+    const hasPhotos = hotelPhotos.length > 0
+    const fallbackPhoto =
+        "https://images.unsplash.com/photo-1600585152220-90363fe7e115?q=80&w=1000&auto=format&fit=crop"
+    const photosToShow = hasPhotos ? hotelPhotos : [fallbackPhoto]
+
+    // Hook into shadcn carousel API to keep dots in sync
+    useEffect(() => {
+        if (!carouselApi) return
+
+        const onSelect = () => {
+            setPhotoIndex(carouselApi.selectedScrollSnap())
+        }
+
+        onSelect() // initial
+        carouselApi.on("select", onSelect)
+        return () => {
+            carouselApi.off("select", onSelect)
+        }
+    }, [carouselApi])
+
+    // Auto-advance photos while board is mounted
+    useEffect(() => {
+        if (!carouselApi || photosToShow.length <= 1) return
+
+        const id = setInterval(() => {
+            if (carouselApi.canScrollNext()) {
+                carouselApi.scrollNext()
+            } else {
+                carouselApi.scrollTo(0)
+            }
+        }, 3000)
+
+        return () => clearInterval(id)
+    }, [carouselApi, photosToShow.length])
 
     return (
 
         <Card ref={setNodeRef}
             data-board-id={board.id}
-            data-board-type="draggable-board" className="w-45 min-h-[var(--kanban-card-h-base)] overflow-hidden gap-1 rounded-2xl shadow-lg p-2 transition-transform duration-300 hover:scale-[1.02] hover:shadow-2xl">
+            data-board-type="draggable-board" className="w-full min-h-[var(--kanban-card-h-base)] overflow-hidden gap-1 rounded-2xl shadow-lg p-2 transition-transform duration-300 hover:scale-[1.02] hover:shadow-2xl">
 
 
             {/* --- HEADER SECTION (With Drag Handle and Button) --- */}
@@ -69,8 +113,13 @@ export default function Board({ board, isAnyDragging, suppressSyncRef }) {
                 </div>
 
                 {/* Date label */}
-                <div className="text-xs text-gray-500 mt-1">
-                    {boardDateDisplay}
+                <div className="text-xs text-gray-500 mt-1 flex flex-col items-center">
+                    <p>
+                        {dayWeather.temperature}&deg; C
+                    </p>
+                    <p>
+                        {dayWeather.condition}
+                    </p>
                 </div>
 
                 {/* Delete Button */}
@@ -86,18 +135,48 @@ export default function Board({ board, isAnyDragging, suppressSyncRef }) {
             </div>
 
 
-            {/* Main Image */}
+            {/* Main Image (Hotel photo carousel) */}
             <button
                 type="button"
-                className="h-25 w-full rounded-t-2xl overflow-hidden focus:outline-none"
+                className="h-35 w-full rounded-t-2xl overflow-hidden focus:outline-none"
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={() => setEditOpen(true)}
             >
-                <img
-                    src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?q=80&w=1000&auto=format&fit=crop"
-                    alt="Hotel"
-                    className="h-full w-full object-cover"
-                />
+                <div className="relative w-full h-40 rounded-2xl overflow-hidden">
+                    <Carousel
+                        setApi={setCarouselApi}
+                        opts={{
+                            loop: photosToShow.length > 1,
+                        }}
+                        className="w-full h-full"
+                    >
+                        <CarouselContent className="h-full">
+                            {photosToShow.map((src, idx) => (
+                                <CarouselItem key={idx} className="h-40">
+                                    <img
+                                        src={src}
+                                        alt={board?.hotel?.hotelName || `Hotel photo ${idx + 1}`}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </CarouselItem>
+                            ))}
+                        </CarouselContent>
+                    </Carousel>
+
+                    {photosToShow.length > 1 && (
+                        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+                            {photosToShow.map((_, idx) => (
+                                <span
+                                    key={idx}
+                                    className={
+                                        "h-1.5 rounded-full transition-all " +
+                                        (idx === photoIndex ? "w-4 bg-white" : "w-2 bg-white/60")
+                                    }
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
             </button>
 
             <CardContent className="p-1">
@@ -108,7 +187,7 @@ export default function Board({ board, isAnyDragging, suppressSyncRef }) {
                     onMouseDown={(e) => e.stopPropagation()}
                     onClick={() => setEditOpen(true)}
                 >
-                    Attraction Timeline
+                    Day Activities
                 </button>
 
                 {/* ITEMS (not a trigger; still draggable) */}

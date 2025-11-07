@@ -56,6 +56,7 @@ export default function SortableItem({ id, boardId, isAnyDragging }) {
                 timeOfDay={item?.timeOfDay || ''}
                 location={item?.location || ''}
                 description={item?.description || ''}
+                photos={item?.placeDetails?.photoUrls || []}
                 isDragging={isDragging || isAnyDragging}
             />
         </Card>

@@ -160,7 +160,7 @@ const initialState = loadStateFromStorage();
 
 // create a Redux slice named 'boards' with initial state and reducers
 const boardsSlice = createSlice({
-    name: 'boards', // <-- Kept original name
+    name: 'boards',
     initialState,
     reducers: {
         // --- New Reducer for Top-Level Info ---
@@ -292,9 +292,10 @@ const boardsSlice = createSlice({
         moveBoard: (state, action) => {
             const { oldIndex, newIndex } = action.payload
 
-            // 1) Snapshot current order and the dates at each position
+            // 1) Snapshot current order and the dates and temperature at each position
             const oldOrder = state.boardOrder.slice()
             const datesByPos = oldOrder.map((id) => state.boards[id]?.date ?? null)
+            const temperaturesByPos = oldOrder.map((id) => state.boards[id]?.weather ?? null)   // capture all weather information for that day
 
             // 2) Compute the new order
             const newOrder = arrayMove(oldOrder, oldIndex, newIndex)
@@ -307,9 +308,14 @@ const boardsSlice = createSlice({
             for (let i = 0; i < newOrder.length; i++) {
                 const boardId = newOrder[i]
                 const dateForThisPosition = datesByPos[i]
+                const weatherForThisPosition = temperaturesByPos[i]
+
                 if (boardId && state.boards[boardId]) {
                     if (dateForThisPosition != null) {
                         state.boards[boardId].date = dateForThisPosition
+                    }
+                    if (weatherForThisPosition != null) {
+                        state.boards[boardId].weather = weatherForThisPosition
                     }
                     // Update dayNumber and title
                     const newDayNumber = i + 1;
@@ -334,6 +340,8 @@ const boardsSlice = createSlice({
                 weather: { temperature: null, condition: '' },
                 ...newBoard, // Provided fields will overwrite defaults
             };
+
+            boardData.weather = { temperature: null, condition: '' }; // Clear the weather info for new boards
 
             // 1. Add to the boards dictionary
             state.boards[boardData.id] = boardData
@@ -383,6 +391,10 @@ const boardsSlice = createSlice({
 
             const itemsToRemove = state.boards[boardId]?.items || [];
 
+            // Capture the weather information for the board that is being removed
+            let nextBoardWeather = state.boards[boardId]?.weather || null;
+            let weatherInfoPlch = nextBoardWeather;
+
             // 1) Remove the board data
             delete state.boards[boardId]
 
@@ -393,6 +405,10 @@ const boardsSlice = createSlice({
             for (let i = removedIndex; i < newOrder.length; i++) {
                 const id = newOrder[i]
                 const b = state.boards[id]
+                weatherInfoPlch = b?.weather;   // store the board's weather info before overwriting
+                b.weather = nextBoardWeather; // update the board's weather to the next board's weather info
+                nextBoardWeather = weatherInfoPlch; // shift the placeholder to the next board's weather info
+
                 if (b) {
                     if (b.date) {
                         b.date = addDays(parseISO(b.date), -1).toISOString()
@@ -421,12 +437,13 @@ const boardsSlice = createSlice({
              * Payload: { boardId, hotel } // hotel is the full hotel object
              */
         updateBoardHotel: (state, action) => {
-            const { boardId, hotel } = action.payload
+            const { boardId, hotelName } = action.payload
+
             if (state.boards[boardId]) {
                 // Updates the nested object
-                state.boards[boardId].hotel = hotel;
+                state.boards[boardId].hotel.hotelName = hotelName;
                 // ALSO updates the top-level 'hotelName' for consistency
-                state.boards[boardId].hotelName = hotel.hotelName;
+                state.boards[boardId].hotelName = hotelName;
             }
         },
 
@@ -555,7 +572,6 @@ export const {
     setBoardDatesFromBase,
     setBoardDate,
     addEmptyBoard,
-    updateBoardHotelName,
     addAttractionToBoard,
     updateAttractionItem,
 
