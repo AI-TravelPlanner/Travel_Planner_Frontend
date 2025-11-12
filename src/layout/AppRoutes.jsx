@@ -6,10 +6,9 @@ import PageNotFound from "./PageNotFound";
 import AuthPage from "@/SignIn/SignInPage";
 import Dashboard from "@/dashboard/Dashboard";
 import ExplorePage from "@/dashboard/ExplorePage";
-import DemoPlanTrip from "@/plan-trip/planTrip";
 import Layout from "./Layout";
 import DashboardLayout from "@/dashboard/DashboardLayout";
-import DemoNaz from "@/api/demo";
+import GenerateDayOptionsButton from "@/naz-button-daily/demo";
 
 
 const AppRoutes = () => {
@@ -21,7 +20,7 @@ const AppRoutes = () => {
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         {/* <Route path="/plan-trip" element={<DemoPlanTrip />} /> */}
-        <Route path="/plan-trip" element={<DemoNaz />} />
+        <Route path="/plan-trip" element={<GenerateDayOptionsButton />} />
 
         <Route path="/user-profile" element={<HomePage />} />
       </Route>

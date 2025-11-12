@@ -500,6 +500,17 @@ const boardsSlice = createSlice({
         },
 
         /**
+         * --- ADD THIS NEW REDUCER ---
+         * Merges a map of new items into the main itemsById state.
+         * Payload: { "item-123": { ... }, "item-124": { ... } }
+         */
+        addItems: (state, action) => {
+            // This will add all new items from the payload
+            // and overwrite any existing ones with the same ID.
+            Object.assign(state.itemsById, action.payload);
+        },
+
+        /**
          * Removes an attraction (item) from a board and from the global state.
          * Payload: { boardId, itemId }
          */
@@ -579,6 +590,7 @@ export const {
     updateTripDetails,
     updateBoardHotel,
     removeAttractionItem,
+    addItems
 
 } = boardsSlice.actions
 

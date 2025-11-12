@@ -4,6 +4,7 @@ import { addTemplateToKanbanAndRemove } from './thunk';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
+import GenerateDayOptionsButton from '@/naz-button-daily/demo';
 
 // ---------------- Template Card ----------------
 
@@ -60,10 +61,13 @@ const TemplateBoardList = () => {
         <div className="h-full w-full">
             {/* Panel that always encapsulates the whole list */}
             <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-md p-5 w-full min-w-0 overflow-visible">
-                <div className="shrink-0">
-                    <h2 className="text-xl font-bold">Board Templates</h2>
-                    <p className="mb-2 text-sm text-muted-foreground">(Source)</p>
+                <div className="relative flex items-center w-full">
+                    <div className="absolute left-0">
+                        <GenerateDayOptionsButton />
+                    </div>
+                    <h2 className="mx-auto text-xl font-bold">Extra Day Plans</h2>
                 </div>
+
 
                 {availableTemplates.length === 0 ? (
                     <p className="text-muted-foreground">No templates available.</p>

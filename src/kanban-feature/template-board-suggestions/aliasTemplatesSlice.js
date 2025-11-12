@@ -1,6 +1,8 @@
 // aliasTemplatesSlice.js
 import { createSlice } from '@reduxjs/toolkit'
 
+import { fetchDailyOptions } from './thunk';
+
 const STORAGE_KEY = 'aliasTemplatesState';
 
 // We rename your original initialState to defaultState
@@ -19,6 +21,10 @@ const defaultState = {
         },
         // ... more templates
     ],
+
+    // --- 2. ADD STATUS AND ERROR FIELDS ---
+    status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
+    error: null,
 }
 
 /**
@@ -31,8 +37,8 @@ const loadStateFromStorage = () => {
             // No state saved, return the default
             return defaultState;
         }
-        // Return the parsed state
-        return JSON.parse(serializedState);
+        // Make sure to merge saved state with default to avoid missing fields
+        return { ...defaultState, ...JSON.parse(serializedState) };
     } catch (err) {
         console.error("Could not load template state from localStorage", err);
         // Fallback to default
@@ -73,6 +79,28 @@ const aliasTemplatesSlice = createSlice({
                 template => template.id !== templateId
             );
         },
+    },
+
+    // --- 3. ADD THIS extraReducers BLOCK ---
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchDailyOptions.pending, (state) => {
+                state.status = 'loading';
+                state.error = null;
+            })
+            .addCase(fetchDailyOptions.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                // 'action.payload' is the 'newTemplates' array we returned
+                // We'll replace the old templates with these new options.
+                // If you want to *add* them to the existing list, use:
+                // state.availableTemplates.push(...action.payload);
+                state.availableTemplates = action.payload;
+            })
+            .addCase(fetchDailyOptions.rejected, (state, action) => {
+                state.status = 'failed';
+                // 'action.payload' is the error message from rejectWithValue
+                state.error = action.payload;
+            });
     },
 })
 
