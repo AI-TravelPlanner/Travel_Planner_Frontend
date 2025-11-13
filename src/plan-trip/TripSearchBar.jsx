@@ -93,7 +93,10 @@ export const DestinationSearchInput = ({ value, onChange }) => {
   };
 
   return (
-    <div ref={containerRef} className="flex flex-col w-full h-">
+    <div
+      ref={containerRef}
+      className="flex flex-col w-full h-full justify-center items-center"
+    >
       <label className="font-semibold text-gray-800 text-sm flex items-center gap-2">
         <MapPin className="w-4 h-4 text-gray-500" /> Destination
       </label>
@@ -109,7 +112,7 @@ export const DestinationSearchInput = ({ value, onChange }) => {
         onFocus={() => setShowDropdown(true)}
       />
       {showDropdown && suggestions.length > 0 && (
-        <ul className="absolute left-0 top-full mt-1 w-50 max-h-40 overflow-y-auto bg-white shadow-lg rounded-lg border border-gray-200">
+        <ul className="absolute left-0 top-full mt-1 w-60 max-h-45 overflow-y-auto bg-white shadow-lg rounded-lg border border-gray-200">
           {suggestions.map((s, idx) => (
             <li
               key={idx}
