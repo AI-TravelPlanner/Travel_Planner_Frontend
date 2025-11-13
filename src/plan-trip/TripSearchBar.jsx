@@ -112,7 +112,7 @@ export const DestinationSearchInput = ({ value, onChange }) => {
         onFocus={() => setShowDropdown(true)}
       />
       {showDropdown && suggestions.length > 0 && (
-        <ul className="absolute left-0 top-full mt-1 w-60 max-h-45 overflow-y-auto bg-white shadow-lg rounded-lg border border-gray-200">
+        <ul className="absolute left-0 top-full mt-1 w-60 max-h-30 overflow-y-auto bg-white shadow-lg rounded-lg border border-gray-200">
           {suggestions.map((s, idx) => (
             <li
               key={idx}
