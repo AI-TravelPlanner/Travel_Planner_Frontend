@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/select";
 
 import HeadCount from "./head-count";
+import CitySearch from "@/components/city-search";
 
 import {
   setBudget,
@@ -38,17 +39,17 @@ import {
   setProvince,
   setSeason,
   setDate,
+  setCity,
 } from "@/redux-slices/filterSlice";
 
-// List of Canadian provinces
 const provinces = [
+  "Ontario",
   "Alberta",
   "British Columbia",
   "Manitoba",
   "New Brunswick",
   "Newfoundland and Labrador",
   "Nova Scotia",
-  "Ontario",
   "Prince Edward Island",
   "Quebec",
   "Saskatchewan",
@@ -57,12 +58,11 @@ const provinces = [
   "Yukon",
 ];
 
-// List of seasons
 const seasons = ["Spring", "Summer", "Autumn", "Winter"];
 
 export function NavMain({ items }) {
   const dispatch = useDispatch();
-  const { budget, headCount, province, season, date } = useSelector(
+  const { budget, headCount, province, season, date, city } = useSelector(
     (state) => state.filter
   );
   const [minBudget, maxBudget] = budget;
@@ -84,7 +84,7 @@ export function NavMain({ items }) {
 
               <CollapsibleContent>
                 <SidebarMenuSub className="p-3 space-y-3">
-                  {/* Members Section */}
+                  {/* Members */}
                   {item.title === "Members" && (
                     <SidebarMenuSubItem>
                       <SidebarMenuSubButton asChild>
@@ -96,19 +96,16 @@ export function NavMain({ items }) {
                     </SidebarMenuSubItem>
                   )}
 
-                  {/* Budgets Section */}
+                  {/* Budget */}
                   {item.title === "Budget" && (
                     <SidebarMenuSubItem>
                       <div className="flex flex-col gap-3">
                         <label className="text-sm font-medium">
                           Create Budget
                         </label>
-
-                        {/* Range Slider */}
                         <BudgetSlider
                           value={[minBudget, maxBudget]}
                           onValueChange={([newMin, newMax]) => {
-                            // Ensure min is not greater than max
                             if (newMin <= newMax)
                               dispatch(setBudget([newMin, newMax]));
                           }}
@@ -117,7 +114,6 @@ export function NavMain({ items }) {
                         />
 
                         <div className="flex items-center gap-3">
-                          {/* Minimum Input */}
                           <div className="flex items-center gap-1 w-full">
                             <span className="text-sm text-muted-foreground">
                               $
@@ -126,7 +122,7 @@ export function NavMain({ items }) {
                               type="number"
                               value={minBudget}
                               onChange={(e) => {
-                                let val = Number(e.target.value);
+                                const val = Number(e.target.value);
                                 if (val >= 0 && val <= maxBudget)
                                   dispatch(setBudget([val, maxBudget]));
                               }}
@@ -139,7 +135,6 @@ export function NavMain({ items }) {
                             —
                           </span>
 
-                          {/* Maximum Input */}
                           <div className="flex items-center gap-1 w-full">
                             <span className="text-sm text-muted-foreground">
                               $
@@ -148,7 +143,7 @@ export function NavMain({ items }) {
                               type="number"
                               value={maxBudget}
                               onChange={(e) => {
-                                let val = Number(e.target.value);
+                                const val = Number(e.target.value);
                                 if (val >= minBudget && val <= 50000)
                                   dispatch(setBudget([minBudget, val]));
                               }}
@@ -157,7 +152,6 @@ export function NavMain({ items }) {
                             />
                           </div>
                         </div>
-
                         <p className="text-xs text-muted-foreground">
                           Adjust your budget range
                         </p>
@@ -165,7 +159,7 @@ export function NavMain({ items }) {
                     </SidebarMenuSubItem>
                   )}
 
-                  {/* Calendar Section */}
+                  {/* Calendar */}
                   {item.title === "Calendar" && (
                     <SidebarMenuSubItem>
                       <div className="flex flex-col gap-3 w-full">
@@ -185,33 +179,53 @@ export function NavMain({ items }) {
                     </SidebarMenuSubItem>
                   )}
 
-                  {/* Province Section */}
+                  {/* Province & City */}
                   {item.title === "Province" && (
                     <SidebarMenuSubItem>
-                      <div className="flex flex-col gap-3">
-                        <label className="text-sm font-medium">
-                          Select Province
-                        </label>
-                        <Select
-                          value={province}
-                          onValueChange={(val) => dispatch(setProvince(val))}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select province" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {provinces.map((prov) => (
-                              <SelectItem key={prov} value={prov}>
-                                {prov}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                      <div className="flex flex-col gap-4">
+                        {/* Province dropdown */}
+                        <div>
+                          <label className="text-sm font-medium">
+                            Select Province
+                          </label>
+                          <Select
+                            value={province}
+                            onValueChange={(val) => dispatch(setProvince(val))}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select province" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {provinces.map((prov) => (
+                                <SelectItem key={prov} value={prov}>
+                                  {prov}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        {/* City Search */}
+                        <div>
+                          <label className="text-sm font-medium">
+                            Search City
+                          </label>
+                          <CitySearch
+                            apiKey={import.meta.env.VITE_GOOGLE_API_KEY}
+                            value={city || ""}
+                            onSelect={(val) => {
+                              if (val.cityFull) {
+                                dispatch(setCity(val.city));
+                                dispatch(setProvince(val.province));
+                              }
+                            }}
+                          />
+                        </div>
                       </div>
                     </SidebarMenuSubItem>
                   )}
 
-                  {/* Seasons Section */}
+                  {/* Seasons */}
                   {item.title === "Seasons" && (
                     <SidebarMenuSubItem>
                       <div className="flex flex-col gap-3">
