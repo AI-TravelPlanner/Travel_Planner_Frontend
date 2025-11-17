@@ -8,7 +8,7 @@ import Dashboard from "@/dashboard/Dashboard";
 import ExplorePage from "@/dashboard/ExplorePage";
 import Layout from "./Layout";
 import DashboardLayout from "@/dashboard/DashboardLayout";
-import GenerateDayOptionsButton from "@/naz-button-daily/demo";
+import SaveButton from "@/naz-button-daily/SaveButton";
 
 
 const AppRoutes = () => {
@@ -20,7 +20,7 @@ const AppRoutes = () => {
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         {/* <Route path="/plan-trip" element={<DemoPlanTrip />} /> */}
-        <Route path="/plan-trip" element={<GenerateDayOptionsButton />} />
+        {/* <Route path="/plan-trip" element={<SaveButton />} /> */}
 
         <Route path="/user-profile" element={<HomePage />} />
       </Route>

@@ -2,14 +2,13 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
-  Command,
-  GalleryVerticalEnd,
   Users,
   Wallet,
   CalendarDays,
   MapPin,
   CloudSun,
+  Save,
+  Briefcase
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -28,6 +27,7 @@ import { useNavigate } from 'react-router-dom';
 import { SidebarMenu } from "@/components/ui/sidebar";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { SidebarMenuItem } from "@/components/ui/sidebar";
+import { NavSecondary } from "./nav-secondary";
 
 export function AppSidebar({ ...props }) {
   const user = useSelector((state) => state.auth.user); // Firebase user
@@ -39,6 +39,19 @@ export function AppSidebar({ ...props }) {
     { title: "Seasons", icon: CloudSun },
     { title: "Budget", icon: Wallet },
     { title: "Province", icon: MapPin },
+  ];
+
+  const SaveItems = [
+    {
+      title: "Save Trip",
+      icon: Save,
+      id: "save-trip-btn" // Identifier for logic
+    },
+    {
+      title: "View My Trips",
+      icon: Briefcase,
+      url: "/my-trips" // URL for navigation
+    },
   ];
 
   const fullName =
@@ -79,6 +92,10 @@ export function AppSidebar({ ...props }) {
 
       <SidebarContent>
         <NavMain items={navMainItems} />
+      </SidebarContent>
+
+      <SidebarContent>
+        <NavSecondary items={SaveItems} />
       </SidebarContent>
 
       <SidebarFooter>

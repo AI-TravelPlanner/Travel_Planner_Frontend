@@ -4,7 +4,7 @@ import { addTemplateToKanbanAndRemove } from './thunk';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import GenerateDayOptionsButton from '@/naz-button-daily/demo';
+import GenerateDayOptionsButton from '@/naz-button-daily/GenerateDayOptionsButton';
 
 // ---------------- Template Card ----------------
 
