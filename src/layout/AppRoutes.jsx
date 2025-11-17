@@ -8,8 +8,7 @@ import Dashboard from "@/dashboard/Dashboard";
 import ExplorePage from "@/dashboard/ExplorePage";
 import Layout from "./Layout";
 import DashboardLayout from "@/dashboard/DashboardLayout";
-import SaveButton from "@/naz-button-daily/SaveButton";
-
+import TripListItem from "@/naz-button-daily/GetFromDb";
 
 const AppRoutes = () => {
   const user = useSelector((state) => state.auth.user);
@@ -19,7 +18,7 @@ const AppRoutes = () => {
       {/* Public routes with Layout */}
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
-        {/* <Route path="/plan-trip" element={<DemoPlanTrip />} /> */}
+        <Route path="/plan-trip" element={<TripListItem />} />
         {/* <Route path="/plan-trip" element={<SaveButton />} /> */}
 
         <Route path="/user-profile" element={<HomePage />} />

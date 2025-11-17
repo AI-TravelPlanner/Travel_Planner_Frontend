@@ -4,6 +4,8 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api/v1/plan/generate';
 
+
+
 /**
  * Thunk to fetch a new trip plan from the API using a prompt.
  * Payload (promptData): { prompt: string }
@@ -22,6 +24,27 @@ export const fetchTripPlan = createAsyncThunk(
             // We pass a simple, serializable error message
             // or the specific error data from the server response.
             const message = error.response?.data?.message || error.message || 'Failed to fetch plan';
+            return rejectWithValue(message);
+        }
+    }
+);
+
+
+// Define your Base URL (adjust port if needed)
+const BASE_URL = 'http://localhost:8080/api/v1';
+
+export const fetchTripById = createAsyncThunk(
+    'boards/fetchTripById',
+    async (tripId, { rejectWithValue }) => {
+        try {
+            // Call the GET endpoint: /api/v1/trips/{id}
+            const response = await axios.get(`${BASE_URL}/trips/${tripId}`);
+            
+            // The response.data is the Trip entity (which matches your TripPlan structure)
+            console.log("Loaded Trip from DB:", response.data);
+            return response.data; 
+        } catch (error) {
+            const message = error.response?.data?.message || error.message || 'Failed to load trip';
             return rejectWithValue(message);
         }
     }
