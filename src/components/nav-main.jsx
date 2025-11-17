@@ -69,7 +69,7 @@ export function NavMain({ items }) {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      <SidebarGroupLabel>Filter</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item, index) => (
           <Collapsible key={index} asChild className="group/collapsible">
