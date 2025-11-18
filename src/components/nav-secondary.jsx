@@ -51,7 +51,7 @@ export function NavSecondary({
       alert("Please log in to view your trips.");
       return;
     }
-    navigate("/my-trips"); // Use React Router to navigate
+    navigate("/dashboard/mytrips");
   };
 
   return (

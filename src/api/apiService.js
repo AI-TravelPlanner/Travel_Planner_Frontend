@@ -3,6 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api/v1/plan/generate';
+const BASE_URL = 'http://localhost:8080/api/v1';
 
 
 
@@ -30,21 +31,24 @@ export const fetchTripPlan = createAsyncThunk(
 );
 
 
-// Define your Base URL (adjust port if needed)
-const BASE_URL = 'http://localhost:8080/api/v1';
-
-export const fetchTripById = createAsyncThunk(
-    'boards/fetchTripById',
-    async (tripId, { rejectWithValue }) => {
+/**
+ * Thunk to fetch ALL trips for a specific user.
+ * Payload (userId): string (email or uid)
+ */
+export const fetchUserTrips = createAsyncThunk(
+    'boards/fetchUserTrips',
+    async (userId, { rejectWithValue }) => {
         try {
-            // Call the GET endpoint: /api/v1/trips/{id}
-            const response = await axios.get(`${BASE_URL}/trips/${tripId}`);
+            // Call: GET /api/v1/trips?userId=...
+            const response = await axios.get(`${BASE_URL}/trips`, {
+                params: { userId: userId }
+            });
             
-            // The response.data is the Trip entity (which matches your TripPlan structure)
-            console.log("Loaded Trip from DB:", response.data);
+            // The API returns an array of Trip objects: [{id:..., location:...}, {...}]
+            console.log("Fetched User Trips:", response.data);
             return response.data; 
         } catch (error) {
-            const message = error.response?.data?.message || error.message || 'Failed to load trip';
+            const message = error.response?.data?.message || error.message || 'Failed to fetch trips';
             return rejectWithValue(message);
         }
     }

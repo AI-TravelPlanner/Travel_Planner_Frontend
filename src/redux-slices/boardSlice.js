@@ -3,8 +3,7 @@ import { createSlice, nanoid } from '@reduxjs/toolkit'
 // import arrayMove utility to reorder arrays immutably
 import { arrayMove } from '@dnd-kit/sortable'
 import { addDays, formatISO, parseISO } from 'date-fns'
-import { fetchTripPlan, fetchTripById } from '../api/apiService';
-
+import { fetchTripPlan } from '../api/apiService';
 
 
 const STORAGE_KEY = 'activeTripState'; // Must match the key from store.js
@@ -531,7 +530,30 @@ const boardsSlice = createSlice({
             }
         },
 
-    },
+        /**
+     * Loads a trip directly from an existing object (no API call).
+     * Payload: The full Trip object (from the dashboard list).
+     */
+        loadTripFromLocal: (state, action) => {
+            console.log("Loading locally:", action.payload);
+
+            try {
+                // 1. Reuse your existing normalize logic
+                const newState = normalizeData(action.payload);
+
+                // 2. CRITICAL: Restore the Database ID so 'Save' works correctly later
+                newState.currentTripId = action.payload.id;
+
+                // 3. Return the new state (replacing the current state)
+                return newState;
+            } catch (error) {
+                console.error("Failed to normalize local trip:", error);
+                // If it fails, keep existing state
+                return state;
+            }
+        },
+
+    },//reducers
 
     extraReducers: (builder) => {
         builder
@@ -571,40 +593,6 @@ const boardsSlice = createSlice({
                 console.error('Failed to fetch trip plan:', action.payload);
             });
 
-        builder
-            // --- NEW: Handle Loading by ID ---
-            .addCase(fetchTripById.pending, (state) => {
-                console.log('Loading trip from database...');
-                // Optional: state.isLoading = true;
-            })
-            .addCase(fetchTripById.fulfilled, (state, action) => {
-                console.log('Trip loaded successfully. Normalizing...');
-
-                try {
-                    // 1. REUSE your existing normalization logic!
-                    // action.payload is the Trip entity from MongoDB
-                    const newState = normalizeData(action.payload);
-
-                    // 2. CRITICAL: Restore the Database ID
-                    // Since we just loaded this from the DB, we must save its ID
-                    // so that if the user clicks "Save" again, it does a PUT (update)
-                    // instead of a POST (create new).
-                    newState.currentTripId = action.payload.id;
-
-                    // 3. Return the new state to replace the current board
-                    return newState;
-
-                } catch (error) {
-                    console.error('Error normalizing loaded trip:', error);
-                    return state; // Keep old state on error
-                }
-            })
-
-            .addCase(fetchTripById.rejected, (state, action) => {
-                console.error('Failed to load trip:', action.payload);
-                // Optional: state.error = action.payload;
-            });
-
     },
 })
 
@@ -626,6 +614,7 @@ export const {
     updateBoardHotel,
     removeAttractionItem,
     addItems,
+    loadTripFromLocal
 
 } = boardsSlice.actions
 

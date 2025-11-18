@@ -5,6 +5,7 @@ import filterReducer from '@/redux-slices/filterSlice'
 import authReducer from "@/authSlice/authSlice"
 import tripReducer from '@/redux-slices/tripSlice'
 import tripFormReducer from '@/redux-slices/tripSearchSlice'
+import userTripsReducer from '@/redux-slices/userTripSlice'
 
 
 const STORAGE_KEY = 'activeTripState';
@@ -18,7 +19,8 @@ const store = configureStore({
         aliasTemplates: aliasTemplatesReducer,
         filter: filterReducer,
         trips: tripReducer,
-        tripSearch: tripFormReducer
+        tripSearch: tripFormReducer,
+        userTrips: userTripsReducer, // Add this line
     },
 })
 

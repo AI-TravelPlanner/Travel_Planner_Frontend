@@ -8,7 +8,7 @@ import Dashboard from "@/dashboard/Dashboard";
 import ExplorePage from "@/dashboard/ExplorePage";
 import Layout from "./Layout";
 import DashboardLayout from "@/dashboard/DashboardLayout";
-import TripListItem from "@/naz-button-daily/GetFromDb";
+import MyTripsPage from "@/naz-button-daily/MyTripsPage";
 
 const AppRoutes = () => {
   const user = useSelector((state) => state.auth.user);
@@ -18,8 +18,8 @@ const AppRoutes = () => {
       {/* Public routes with Layout */}
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="/plan-trip" element={<TripListItem />} />
-        {/* <Route path="/plan-trip" element={<SaveButton />} /> */}
+        {/* <Route path="/plan-trip" element={<TripListItem />} /> */}
+        {/* <Route path="/my-trips" element={<MyTripsPage />} /> */}
 
         <Route path="/user-profile" element={<HomePage />} />
       </Route>
@@ -35,6 +35,8 @@ const AppRoutes = () => {
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="explore" element={<ExplorePage />} />
+          {/* /dashboard/mytrips <-- NEW NESTED ROUTE */}
+          <Route path="mytrips" element={<MyTripsPage />} />
         </Route>
       )}
 
