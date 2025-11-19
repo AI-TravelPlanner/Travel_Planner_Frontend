@@ -4,9 +4,6 @@ import { useSeason } from '@/dashboard/SeasonThemeSystem';
 const SeasonalAnimations = () => {
   const { season } = useSeason();
   const [particles, setParticles] = useState([]);
-  
-  // Normalize season to lowercase
-  const normalizedSeason = season?.toLowerCase() || 'summer';
 
   useEffect(() => {
     const particleCount = 30;

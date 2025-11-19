@@ -10,6 +10,7 @@ import {
   CalendarDays,
   MapPin,
   CloudSun,
+  Filter,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -24,9 +25,12 @@ import {
 } from "@/components/ui/sidebar";
 
 import { useSelector } from "react-redux";
+import { useSeason } from "@/dashboard/SeasonThemeSystem";
 
 export function AppSidebar({ ...props }) {
-  const user = useSelector((state) => state.auth.user); // Firebase user
+  const user = useSelector((state) => state.auth.user);
+  const filterState = useSelector((state) => state.filter);
+  const { theme, season } = useSeason();
 
   const navMainItems = [
     { title: "Members", icon: Users },
@@ -48,6 +52,14 @@ export function AppSidebar({ ...props }) {
     avatar: user?.photoURL || null,
   };
 
+  const handleApplyFilters = () => {
+    const allFilters = {
+      ...filterState,
+      theme: season,
+    };
+    console.log('All filter values:', allFilters);
+  };
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -64,7 +76,15 @@ export function AppSidebar({ ...props }) {
         <NavMain items={navMainItems} />
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className="gap-2">
+        <button
+          onClick={handleApplyFilters}
+          className={`w-full flex items-center justify-center gap-2 px-4 py-3 ${theme.button} ${theme.buttonShadow} rounded-lg transition-all font-medium group-data-[collapsible=icon]:hidden`}
+        >
+          <Filter className="w-4 h-4" />
+          <span>Apply Filters</span>
+        </button>
+        
         <NavUser user={userData} />
       </SidebarFooter>
 

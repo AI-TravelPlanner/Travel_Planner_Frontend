@@ -1,55 +1,94 @@
-import { AppSidebar } from "@/components/app-sidebar";
+"use client";
+
+import * as React from "react";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
+  AudioWaveform,
+  Command,
+  GalleryVerticalEnd,
+  Users,
+  Wallet,
+  CalendarDays,
+  MapPin,
+  CloudSun,
+  Filter,
+} from "lucide-react";
+
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
+import { TeamSwitcher } from "@/components/team-switcher";
 import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
 } from "@/components/ui/sidebar";
 
-export default function SideBar() {
+import { useSelector } from "react-redux";
+import { useSeason } from "@/dashboard/SeasonThemeSystem";
+
+export function AppSidebar({ ...props }) {
+  const user = useSelector((state) => state.auth.user);
+  const filterState = useSelector((state) => state.filter);
+  const { theme, season } = useSeason();
+
+  const navMainItems = [
+    { title: "Members", icon: Users },
+    { title: "Calendar", icon: CalendarDays },
+    { title: "Seasons", icon: CloudSun },
+    { title: "Budget", icon: Wallet },
+    { title: "Province", icon: MapPin },
+  ];
+
+  const fullName =
+    user?.displayName ||
+    (user?.firstName && user?.lastName
+      ? `${user.firstName} ${user.lastName}`
+      : "NA");
+
+  const userData = {
+    name: fullName,
+    email: user?.email || "NA",
+    avatar: user?.photoURL || null,
+  };
+
+  const handleApplyFilters = () => {
+    const allFilters = {
+      ...filterState,
+      theme: season,
+    };
+    console.log('All filter values:', allFilters);
+  };
+
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-          </div>
-          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader>
+        <TeamSwitcher
+          teams={[
+            { name: "Acme Inc", logo: GalleryVerticalEnd, plan: "Enterprise" },
+            { name: "Acme Corp.", logo: AudioWaveform, plan: "Startup" },
+            { name: "Evil Corp.", logo: Command, plan: "Free" },
+          ]}
+        />
+      </SidebarHeader>
+
+      <SidebarContent>
+        <NavMain items={navMainItems} />
+      </SidebarContent>
+
+      <SidebarFooter className="gap-2">
+        <button
+          onClick={handleApplyFilters}
+          className={`w-full flex items-center justify-center gap-2 px-4 py-3 ${theme.button} ${theme.buttonShadow} rounded-lg transition-all font-medium group-data-[collapsible=icon]:hidden`}
+        >
+          <Filter className="w-4 h-4" />
+          <span>Apply Filters</span>
+        </button>
+        
+        <NavUser user={userData} />
+      </SidebarFooter>
+
+      <SidebarRail />
+    </Sidebar>
   );
 }
