@@ -75,6 +75,7 @@ export const fetchDailyOptions = createAsyncThunk(
             // 4. Call the new API endpoint
             const response = await axios.post(`${API_URL}/options/day`, requestData);
             
+            console.log(response.data)
             // response.data is the array of Day objects: [ { dayNumber: 2, ... }, { dayNumber: 2, ... } ]
             
             // 5. Normalize the data (separate templates from items)
