@@ -279,55 +279,77 @@ const boardsSlice = createSlice({
             }
         },
 
-        /**
+       /**
          * Adds a brand new board object (e.g., from a template).
-         * This reducer logic is from your original file.
-         * Payload: { id, title, items }
+         * Payload: { id, title, items, fullDayData: { hotel, weather, ... } }
          */
         addKanbanBoard: (state, action) => {
-            const newBoard = action.payload // Note: This might be incomplete (missing hotel, weather)
+            const newBoard = action.payload;
 
-            // Ensure default fields exist if not provided
-            const boardData = {
-                hotelName: 'Select a hotel',
-                hotel: { hotelName: 'Select a hotel', location: '', pricePerNight: 0, placeDetails: null },
-                weather: { temperature: null, condition: '' },
-                ...newBoard, // Provided fields will overwrite defaults
+            // --- CHANGE 1: Smart Data Extraction ---
+            // Check if the data is hiding inside 'fullDayData' (from templates)
+            // or if it's at the top level.
+            const sourceData = newBoard.fullDayData || newBoard;
+
+            const hotelData = sourceData.hotel || { 
+                hotelName: 'Select a hotel', 
+                location: '', 
+                pricePerNight: 0, 
+                placeDetails: null 
             };
 
-            boardData.weather = { temperature: null, condition: '' }; // Clear the weather info for new boards
+            const weatherData = sourceData.weather || { 
+                temperature: null, 
+                condition: '' 
+            };
 
-            // 1. Add to the boards dictionary
-            state.boards[boardData.id] = boardData
+            // --- CHANGE 2: Construct Board Data ---
+            const boardData = {
+                // 1. Spread the basic info (id, title, items)
+                ...newBoard, 
 
-            // 2. Set date based on the last board
-            const lastBoardID = state.boardOrder[state.boardOrder.length - 1]
-            const lastBoard = state.boards[lastBoardID]
+                // 2. Explicitly set the rich data we extracted above
+                hotel: hotelData,
+                hotelName: hotelData.hotelName || 'Select a hotel', // Sync top level name
+                weather: weatherData,
+            };
+
+            // --- REMOVED THE LINE THAT WAS CLEARING WEATHER HERE ---
+            // (You previously had: boardData.weather = { temperature: null... };)
+
+            // 3. Add to the boards dictionary
+            state.boards[boardData.id] = boardData;
+
+            // 4. Set date based on the last board
+            const lastBoardID = state.boardOrder[state.boardOrder.length - 1];
+            const lastBoard = state.boards[lastBoardID];
+            
             if (lastBoard?.date) {
-                boardData.date = addDays(parseISO(lastBoard.date), 1).toISOString()
+                boardData.date = addDays(parseISO(lastBoard.date), 1).toISOString();
             } else if (!boardData.date) {
                 boardData.date = new Date().toISOString();
             }
 
-            // 3. Set dayNumber and Title
+            // 5. Set dayNumber and Title
             const newDayNumber = state.boardOrder.length + 1;
             boardData.dayNumber = newDayNumber;
+            
             // Only set title if not provided
             if (!newBoard.title) {
                 boardData.title = `Day ${newDayNumber}`;
             }
 
-            // 4. Check if items are in itemsById (from original logic)
+            // 6. Check if items are in itemsById
+            // (This part of your code was fine, keep it)
             boardData.items.forEach((item) => {
                 if (!state.itemsById.hasOwnProperty(item)) {
-                    console.log(`${item} not in items by ID`)
-                    // You would need to add logic here to fetch/add item details
-                    // state.itemsById[item] = { ... }
+                   // This item exists in the board list but not in the database.
+                   // Since we handled 'addItems' in the thunk, this should be fine.
                 }
             })
 
-            // 5. Add to the boardOrder array (at the end)
-            state.boardOrder.push(boardData.id)
+            // 7. Add to the boardOrder array (at the end)
+            state.boardOrder.push(boardData.id);
         },
 
         /**
