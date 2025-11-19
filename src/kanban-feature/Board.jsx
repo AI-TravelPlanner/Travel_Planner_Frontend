@@ -142,7 +142,7 @@ export default function Board({ board, isAnyDragging, suppressSyncRef }) {
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={() => setEditOpen(true)}
             >
-                <div className="relative w-full h-40 rounded-2xl overflow-hidden">
+                <div className="relative w-full h-40 rounded-2xl overflow-hidden group">
                     <Carousel
                         setApi={setCarouselApi}
                         opts={{
@@ -163,13 +163,22 @@ export default function Board({ board, isAnyDragging, suppressSyncRef }) {
                         </CarouselContent>
                     </Carousel>
 
+                    {/* --- NEW: Hotel Name Overlay --- */}
+                    {/* This gradient ensures text is readable on any image */}
+                    <div className="absolute bottom-2 left-0 w-full bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 pt-14 pointer-events-none">
+                        <h3 className="text-white text-sm leading-tight truncate shadow-sm">
+                            {board?.hotel?.hotelName || "Hotel Name"}
+                        </h3>
+                    </div>
+
+                    {/* Dots Indicator */}
                     {photosToShow.length > 1 && (
-                        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+                        <div className="absolute bottom-3 right-3 flex gap-1.5 z-10">
                             {photosToShow.map((_, idx) => (
                                 <span
                                     key={idx}
                                     className={
-                                        "h-1.5 rounded-full transition-all " +
+                                        "h-1.5 rounded-full transition-all shadow-sm " +
                                         (idx === photoIndex ? "w-4 bg-white" : "w-2 bg-white/60")
                                     }
                                 />

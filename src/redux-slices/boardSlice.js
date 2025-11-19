@@ -9,79 +9,33 @@ import { fetchTripPlan } from '../api/apiService';
 const STORAGE_KEY = 'activeTripState'; // Must match the key from store.js
 
 // The source JSON data provided by the user
-const sourceTripJson = {
-    location: 'Montreal, Canada',
-    budget: 500.0,
-    startDate: '2024-03-15',
-    endDate: '2024-03-15',
-    numberOfPeople: 1,
-    theme: 'Food and History',
-    days: [
-        {
-            dayNumber: 1,
-            date: '2024-03-15',
-            weather: {
-                temperature: 5,
-                condition: 'Cloudy',
-            },
-            hotel: {
-                hotelName: 'Hotel Birks Montreal',
-                location: '1240 Phillips Square, Montreal, QC H3B 3H4, Canada',
-                pricePerNight: 300.0,
-                placeDetails: {
-                    /* ... hotel placeDetails ... */
-                },
-            },
-            activities: [
-                {
-                    name: 'Visit Old Montreal',
-                    price: 0.0,
-                    duration: '3 hours',
-                    placeDetails: {
-                        placeId: 'ChIJKSezr_gayUwRDnKQVi-nC4U',
-                        formattedAddress: '333 Rue de la Commune O, Montréal, QC H2Y 2E2, Canada',
-                        photoUrls: [
-                            'https://places.googleapis.com/v1/places/ChIJKSezr_gayUwRDnKQVi-nC4U/photos/AWn5SU5QCxllg3f9PImWRh9QT5OZvpZXiRqULD9BLFNf9gZWo11wGg4BGo7SOdO90pKf0qO40X6bTGqud6UPeijHwulRXCojNdQkTj2Nv0mDGkPh3gKDu1S0v3LtxMjKBe9VVrqX-PnUXk3jij3SJVzW4c2cwEAebUqQfPfKt-w6KJJrrg4hcK4ZSacb4zd9QaJO8PaDGLDGEJ4AEAKnN-nD0AwtLIDZtC7eAEBR476Zk01biZkGnz9jTSauTqiOEArnL_6cWbbECCuOMpLEY2btLrzugk7H2p_GtWS_bYypim2iVA/media?maxHeightPx=800&key=AIzaSyAb4OlMDJ0APq8X2qil_ZVMsWVBT0z0Vls',
-                        ],
-                        /* ... other activity placeDetails ... */
-                    },
-                },
-                {
-                    name: "Lunch at Schwartz's Deli",
-                    price: 30.0,
-                    duration: '1.5 hours',
-                    placeDetails: {
-                        placeId: 'ChIJEWsAWDMayUwRQPiLFOWhYdk',
-                        formattedAddress: "3895 Boul. Saint-Laurent, Montréal, QC H2W 1K4, Canada",
-                        photoUrls: [
-                            'https://places.googleapis.com/v1/places/ChIJEWsAWDMayUwRQPiLFOWhYdk/photos/AWn5SU5VZugCzLXwn9qveiROAkttqclWdGnzZsuTFeuZVjWCJWH92lp-I_fK4QIPgf6lvAbrZl0wwpY2Ke0miVDTURwkOzmgD-2zpN8JBBJw83H484kH6vdnQ7oaRvLlOsXiuftI_qCRkdb9cQf6mJzxSSsWrphpgRjTQnjucMWFgSuatu5PFJwwZH_V3GNfPC0S0MfFlAlz7bladXeMTGPLvoVDrT4wcKevDq9KLTTD8eAsFcOnkEQ9U-DtMn4g8UwEbrM0BPyxybZ1LgbVJnrH9vL47KUftkoCmWlPjthEUkkWdA/media?maxHeightPx=800&key=AIzaSyAb4OlMDJ0APq8X2qil_ZVMsWVBT0z0Vls',
-                        ],
-                        /* ... other activity placeDetails ... */
-                    },
-                },
-                // ... other activities
-            ],
-        },
-        // ... potentially more days
-    ],
-}
+// --- ADD THIS ---
+const defaultEmptyState = {
+  location: '',
+  budget: 0,
+  startDate: '',
+  endDate: '',
+  numberOfPeople: 1,
+  theme: '',
+  currentTripId: null, 
+  boards: {},
+  boardOrder: [],
+  itemsById: {},
+};
 
-// --- THIS IS THE NEW LOADING LOGIC ---
 const loadStateFromStorage = () => {
-    try {
-        const serializedState = localStorage.getItem(STORAGE_KEY);
-        if (serializedState === null) {
-            // No state saved, normalize the default
-            return normalizeData(sourceTripJson);
-        }
-        // IMPORTANT: We parse the saved state. We DO NOT normalize it again,
-        // because we are saving the *already normalized state*.
-        return JSON.parse(serializedState);
-    } catch (err) {
-        console.error("Could not load state from localStorage", err);
-        // Fallback to default
-        return normalizeData(sourceTripJson);
+  try {
+    const serializedState = localStorage.getItem(STORAGE_KEY);
+    if (serializedState === null) {
+      // CHANGED: Return clean state instead of dummy data
+      return defaultEmptyState; 
     }
+    return JSON.parse(serializedState);
+  } catch (err) {
+    console.error("Could not load state from localStorage", err);
+    // CHANGED: Fallback to clean state
+    return defaultEmptyState;
+  }
 };
 
 /**

@@ -5,44 +5,28 @@ import { fetchDailyOptions } from './thunk';
 
 const STORAGE_KEY = 'aliasTemplatesState';
 
-// We rename your original initialState to defaultState
-const defaultState = {
-    // List of boards available to be copied into the main Kanban view
-    availableTemplates: [
-        {
-            id: 'template-1',
-            title: 'New Project Template',
-            items: ["item-20", "item-21"] // Pre-populate with item IDs
-        },
-        {
-            id: 'template-2',
-            title: 'Quick To-Do List',
-            items: ["item-22"]
-        },
-        // ... more templates
-    ],
-
-    // --- 2. ADD STATUS AND ERROR FIELDS ---
+// --- 1. DEFINE THE CLEAN EMPTY STATE ---
+const defaultEmptyState = {
+    // Start with an empty list instead of dummy data
+    availableTemplates: [],
+    
     status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null,
 }
 
-/**
- * Loads the saved template list from localStorage.
- */
 const loadStateFromStorage = () => {
     try {
         const serializedState = localStorage.getItem(STORAGE_KEY);
         if (serializedState === null) {
-            // No state saved, return the default
-            return defaultState;
+            // No state saved, return the clean empty state
+            return defaultEmptyState;
         }
-        // Make sure to merge saved state with default to avoid missing fields
-        return { ...defaultState, ...JSON.parse(serializedState) };
+        // Merge saved state with default to ensure structure exists
+        return { ...defaultEmptyState, ...JSON.parse(serializedState) };
     } catch (err) {
         console.error("Could not load template state from localStorage", err);
-        // Fallback to default
-        return defaultState;
+        // Fallback to clean state
+        return defaultEmptyState;
     }
 };
 
