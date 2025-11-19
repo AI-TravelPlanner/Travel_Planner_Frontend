@@ -10,6 +10,8 @@ import { logBoardsStateThunk } from "@/redux-slices/thunkSave";
 // Import Icons (assuming standard lucide-react icons for Save and Briefcase)
 import { Save, Briefcase } from "lucide-react"
 
+import { toast } from "sonner";
+
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -30,18 +32,35 @@ export function NavSecondary({
 
   // --- Handler 1: Save Trip ---
   const handleSaveClick = async () => {
+    // 1. Auth Check
     if (!user) {
-      alert("Please log in to save your trip.");
+      toast.error("Authentication Required", {
+        description: "Please log in to save your trip.",
+      });
       return;
     }
 
+    // 2. Start Loading Toast
+    const toastId = toast.loading("Saving trip details...");
+
     try {
-      // Dispatch your existing Thunk
+      // 3. Perform Async Action
       await dispatch(logBoardsStateThunk(user.email)).unwrap();
-      alert("Trip saved successfully!");
+
+      // 4. Update Loading Toast to Success
+      toast.success("Trip Saved", {
+        description: "Your trip has been saved successfully!",
+        id: toastId, // This replaces the loading toast
+      });
+
     } catch (error) {
       console.error(error);
-      alert("Failed to save trip.");
+
+      // 5. Update Loading Toast to Error
+      toast.error("Save Failed", {
+        description: "Could not save trip. Please try again.",
+        id: toastId, // This replaces the loading toast
+      });
     }
   };
 
