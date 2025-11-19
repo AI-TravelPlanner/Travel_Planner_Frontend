@@ -7,6 +7,7 @@ import { Calendar, Wallet, MapPin, ArrowRight, Users } from 'lucide-react';
 import { fetchUserTrips } from '../api/apiService';
 import { loadTripFromLocal } from '@/redux-slices/boardSlice';
 import cardImage from '@/assets/image1.jpg'; 
+import TripCardImage from './TripCardImage';
 
 const MyTripsPage = () => {
     const dispatch = useDispatch();
@@ -80,11 +81,12 @@ const MyTripsPage = () => {
                                     className="group bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col"
                                 >
                                     <div className="relative h-48 w-full overflow-hidden">
-                                        <img
+                                        {/* <img
                                             src={cardImage}
                                             alt={trip.location}
                                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                        />
+                                        /> */}
+                                        <TripCardImage location={trip.location}/>
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
                                     </div>
 
