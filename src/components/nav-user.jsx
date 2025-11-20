@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/firebaseConfig";
-import { logout } from "@/authSlice/authSlice";
+import { logout } from "@/authSlice/authSlice"; // Import logout action
 
 import {
   BadgeCheck,
@@ -42,7 +42,7 @@ export function NavUser({ user }) {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      dispatch(logout());
+      dispatch(clearUser()); // Changed from logout() to clearUser()
       navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
